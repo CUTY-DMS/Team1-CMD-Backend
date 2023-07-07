@@ -1,0 +1,34 @@
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # ??
+    properties:
+      hibernate: # ????? ???? sql?? ?? ?? ???? ??
+        format_sql: true #????? ???? sql?? ?? ?? ???? ??
+        show_sql: true # ????? ???? sql?? ?? ?? ???? ??
+    defer-datasource-initialization: true
+
+jwt:
+  header: ${HEADER:Authorization}
+  prefix : ${PREFIX:Bearer }
+  secret-key: ${JWT_SECRET_KEY:happilyeverafterhappilyesdfghgdfsdsadfgfdsfgasdfjaskdfhasjkdfhasjkdfaskverafter}
+  access-exp: ${JWT_ACCESS_EXP:7200}
+  refresh-exp: ${JWT_REFRESH_EXP:123456789}
+  access-expiration: 360000
+
+logging:
+  level:
+    com.example : DEBUG
+    org:
+      hibernate:
+        type:
+          descriptor:
+            sql: trace
