@@ -1,5 +1,6 @@
 package com.example.cmd.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,8 @@ import java.util.List;
 @Entity
 @RequiredArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 
 public class User implements UserDetails {
 
@@ -26,22 +29,24 @@ public class User implements UserDetails {
 
     private Role role;
 
+    private Long classIdNumber;
+
+    private Long birth;
+
+    private String majorField;
+
+    private String clubName;
 
     public User(User user) {
         this.email = user.getEmail();
         this.name = user.getName();
         this.password = user.getPassword();
         this.role = user.getRole();
+        this.classIdNumber = user.getClassIdNumber();
+        this.birth = user.getBirth();
+        this.majorField = user.getMajorField();
+        this.clubName = user.getClubName();
     }
-
-    @Builder
-    public User(String name, String email, String password, Role role) {
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.role = role;
-    }
-
 
     public String getEmail() {
         return email;

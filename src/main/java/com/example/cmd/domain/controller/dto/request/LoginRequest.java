@@ -1,12 +1,11 @@
-package com.example.cmd.domain.dto.request;
+package com.example.cmd.domain.controller.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor()
-public class SignupRequest {
-    private String name;
+public class LoginRequest {
     private String email;
     private String password;
 }
