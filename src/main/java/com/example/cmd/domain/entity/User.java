@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class User implements UserDetails {
     @Id
     private String email;
 
-    private String name;
+    private String username;
 
     @Convert(converter = PasswordConverter.class)
     private String password;
@@ -39,7 +40,7 @@ public class User implements UserDetails {
 
     public User(User user) {
         this.email = user.getEmail();
-        this.name = user.getName();
+        this.username = user.getUsername();
         this.password = user.getPassword();
         this.role = user.getRole();
         this.classIdNumber = user.getClassIdNumber();
@@ -62,9 +63,8 @@ public class User implements UserDetails {
         return password;
     }
 
-    @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

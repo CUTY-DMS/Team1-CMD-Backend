@@ -1,22 +1,19 @@
-package com.example.cmd;
+package com.example.cmd.domain.controller;
 
-import com.example.cmd.domain.dto.request.LoginRequest;
-import com.example.cmd.domain.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.request.LoginRequest;
+import com.example.cmd.domain.controller.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
 import com.example.cmd.global.security.Token;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.charset.CharacterCodingException;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
-public class MainController {
+public class UserController {
     private final UserService userService;
 
 
@@ -28,6 +25,11 @@ public class MainController {
     @PostMapping("login")
     public Token login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
+    }
+
+    @GetMapping("myPage{email}")
+    public UserInfoResponse myPage() {
+        return userService.myPage();
     }
 }
 

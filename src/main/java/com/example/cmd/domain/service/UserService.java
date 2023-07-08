@@ -1,11 +1,13 @@
 package com.example.cmd.domain.service;
 
-import com.example.cmd.domain.dto.request.LoginRequest;
-import com.example.cmd.domain.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.request.LoginRequest;
+import com.example.cmd.domain.controller.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -25,14 +26,15 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordConverter passwordConverter;
+    private final UserFacade userFacade;
 
     @Transactional
     public void signUp(SignupRequest signupRequest) {
-        Optional<User> byUser = userRepository.findByEmail(signupRequest.getName());
+        Optional<User> byUser = userRepository.findByEmail(signupRequest.getUsername());
         if (byUser.isEmpty()) {
             User user = User.builder()
                     .email(signupRequest.getEmail())
-                    .name(signupRequest.getName())
+                    .username(signupRequest.getUsername())
                     .password(signupRequest.getPassword())
                     .role(Role.USER)
                     .build();
@@ -54,5 +56,10 @@ public class UserService {
     private boolean isPasswordMatching(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public UserInfoResponse myPage() {
+        User currentUser = userFacade.currentUser();
+        return new UserInfoResponse(currentUser);
     }
 }
