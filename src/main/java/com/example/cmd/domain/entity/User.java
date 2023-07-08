@@ -49,6 +49,7 @@ public class User implements UserDetails {
         this.clubName = user.getClubName();
     }
 
+
     public String getEmail() {
         return email;
     }

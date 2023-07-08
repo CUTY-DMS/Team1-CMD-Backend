@@ -62,4 +62,5 @@ public class UserService {
         User currentUser = userFacade.currentUser();
         return new UserInfoResponse(currentUser);
     }
+
 }
