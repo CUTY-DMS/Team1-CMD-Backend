@@ -13,14 +13,23 @@ public class UserFacade {
 
     private final UserRepository userRepository;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     public User currentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         return userRepository.findByEmail(email)
+<<<<<<< HEAD
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
 
     }
 }
 
+=======
+                .orElseThrow();
+    }
+}
+>>>>>>> main

@@ -16,7 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< HEAD
 import java.util.List;
+=======
+>>>>>>> main
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,9 +35,21 @@ public class UserService {
 
     @Transactional
     public void signUp(SignupRequest signupRequest) {
+<<<<<<< HEAD
 
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+=======
+        Optional<User> byUser = userRepository.findByEmail(signupRequest.getUsername());
+        if (byUser.isEmpty()) {
+            User user = User.builder()
+                    .email(signupRequest.getEmail())
+                    .username(signupRequest.getUsername())
+                    .password(signupRequest.getPassword())
+                    .role(Role.USER)
+                    .build();
+            userRepository.save(user);
+>>>>>>> main
         }
 
         userRepository.save(
@@ -69,6 +84,7 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
+<<<<<<< HEAD
     public List<UserInfoResponse> myPage() {
 
         User currentUser = userFacade.currentUser();
@@ -79,4 +95,10 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+=======
+    public UserInfoResponse myPage() {
+        User currentUser = userFacade.currentUser();
+        return new UserInfoResponse(currentUser);
+    }
+>>>>>>> main
 }

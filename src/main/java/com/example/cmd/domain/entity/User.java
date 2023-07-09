@@ -31,6 +31,7 @@ public class User implements UserDetails {
     private Role role;
 
     private Long classIdNumber;
+<<<<<<< HEAD
 
     private Long birth;
 
@@ -39,6 +40,26 @@ public class User implements UserDetails {
     private String clubName;
 
 
+=======
+
+    private Long birth;
+
+    private String majorField;
+
+    private String clubName;
+
+    public User(User user) {
+        this.email = user.getEmail();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.classIdNumber = user.getClassIdNumber();
+        this.birth = user.getBirth();
+        this.majorField = user.getMajorField();
+        this.clubName = user.getClubName();
+    }
+
+>>>>>>> main
     public String getEmail() {
         return email;
     }
