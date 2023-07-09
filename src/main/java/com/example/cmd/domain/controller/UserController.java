@@ -8,6 +8,8 @@ import com.example.cmd.global.security.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -25,8 +27,8 @@ public class UserController {
         return userService.login(loginRequest);
     }
 
-    @GetMapping("myPage{email}")
-    public UserInfoResponse myPage() {
+    @GetMapping("myPage")
+    public List<UserInfoResponse> myPage() {
         return userService.myPage();
     }
 
