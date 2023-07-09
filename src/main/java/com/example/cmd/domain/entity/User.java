@@ -7,9 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -28,6 +26,8 @@ public class User implements UserDetails {
     @Convert(converter = PasswordConverter.class)
     private String password;
 
+
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     private Long classIdNumber;

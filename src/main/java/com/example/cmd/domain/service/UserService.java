@@ -32,7 +32,7 @@ public class UserService {
 
     @Transactional
     public void signUp(SignupRequest signupRequest) {
-
+        System.out.println("signupRequest = " + signupRequest);
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
         }
@@ -48,8 +48,6 @@ public class UserService {
                         .clubName(signupRequest.getClubName())
                         .role(Role.USER)
                         .build()
-
-
         );
     }
 
