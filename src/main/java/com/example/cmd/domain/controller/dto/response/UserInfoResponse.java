@@ -12,14 +12,17 @@ public class UserInfoResponse {
 
     private String username;
     private String email;
-    private String password;
     private Long classIdNumber;
     private Long birth;
     private String majorField;
     private String clubName;
 
-
     public UserInfoResponse(User user) {
         email = user.getEmail();
+        username = user.getUsername();
+        classIdNumber = user.getClassIdNumber();
+        birth = user.getBirth();
+        majorField = user.getMajorField();
+        clubName = user.getClubName();
     }
 }

@@ -16,7 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,16 +32,25 @@ public class UserService {
 
     @Transactional
     public void signUp(SignupRequest signupRequest) {
-        Optional<User> byUser = userRepository.findByEmail(signupRequest.getUsername());
-        if (byUser.isEmpty()) {
-            User user = User.builder()
-                    .email(signupRequest.getEmail())
-                    .username(signupRequest.getUsername())
-                    .password(signupRequest.getPassword())
-                    .role(Role.USER)
-                    .build();
-            userRepository.save(user);
+
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+            throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
         }
+
+        userRepository.save(
+                User.builder()
+                        .username(signupRequest.getUsername())
+                        .email(signupRequest.getEmail())
+                        .password(signupRequest.getPassword())
+                        .majorField(signupRequest.getMajorField())
+                        .birth(signupRequest.getBirth())
+                        .classIdNumber(signupRequest.getClassIdNumber())
+                        .clubName(signupRequest.getClubName())
+                        .role(Role.USER)
+                        .build()
+
+
+        );
     }
 
     public Token login(LoginRequest loginRequest) {
@@ -58,8 +69,14 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public UserInfoResponse myPage() {
-        User currentUser = userFacade.currentUser();
-        return new UserInfoResponse(currentUser);
+    public List<UserInfoResponse> myPage() {
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return userRepository.findAll()
+                .stream()
+                .map(UserInfoResponse::new)
+                .collect(Collectors.toList());
     }
+
 }

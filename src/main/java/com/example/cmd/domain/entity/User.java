@@ -38,16 +38,6 @@ public class User implements UserDetails {
 
     private String clubName;
 
-    public User(User user) {
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.role = user.getRole();
-        this.classIdNumber = user.getClassIdNumber();
-        this.birth = user.getBirth();
-        this.majorField = user.getMajorField();
-        this.clubName = user.getClubName();
-    }
 
     public String getEmail() {
         return email;
@@ -85,6 +75,17 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public User(User user) {
+        this.email = user.getEmail();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.role = user.getRole();
+        this.classIdNumber = user.getClassIdNumber();
+        this.birth = user.getBirth();
+        this.majorField = user.getMajorField();
+        this.clubName = user.getClubName();
     }
 
 }
