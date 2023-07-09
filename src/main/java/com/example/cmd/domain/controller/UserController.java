@@ -12,10 +12,10 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
-    private final UserService userService;
 
+    private final UserService userService;
 
     @PostMapping("signup")
     public void signup(@RequestBody SignupRequest signupRequest) {
