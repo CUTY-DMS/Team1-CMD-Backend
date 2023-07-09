@@ -8,18 +8,11 @@ import com.example.cmd.global.security.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-
-@RestController
-@RequiredArgsConstructor
-@RequestMapping("users")
-
-
-
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 
 public class UserController {
 

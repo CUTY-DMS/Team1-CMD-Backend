@@ -41,8 +41,8 @@ public class UserService {
                 User.builder()
                         .username(signupRequest.getUsername())
                         .email(signupRequest.getEmail())
-                        .password(signupRequest.getPassword())
                         .majorField(signupRequest.getMajorField())
+                        .password(signupRequest.getPassword())
                         .birth(signupRequest.getBirth())
                         .classIdNumber(signupRequest.getClassIdNumber())
                         .clubName(signupRequest.getClubName())
@@ -71,7 +71,7 @@ public class UserService {
 
     public List<UserInfoResponse> myPage() {
 
-        User currentUser = userFacade.getCurrentUser();
+        User currentUser = userFacade.currentUser();
 
         return userRepository.findAll()
                 .stream()
