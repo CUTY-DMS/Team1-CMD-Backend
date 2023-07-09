@@ -21,7 +21,7 @@ public class User implements UserDetails {
     @Id
     private String email;
 
-    private String username;
+    private String name;
 
     @Convert(converter = PasswordConverter.class)
     private String password;
@@ -39,9 +39,9 @@ public class User implements UserDetails {
     private String clubName;
 
 
-    public String getEmail() {
+  /*  public String getEmail() {
         return email;
-    }
+    }*/
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -53,8 +53,9 @@ public class User implements UserDetails {
         return password;
     }
 
+    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -79,7 +80,7 @@ public class User implements UserDetails {
 
     public User(User user) {
         this.email = user.getEmail();
-        this.username = user.getUsername();
+        this.name = user.getName();
         this.password = user.getPassword();
         this.role = user.getRole();
         this.classIdNumber = user.getClassIdNumber();

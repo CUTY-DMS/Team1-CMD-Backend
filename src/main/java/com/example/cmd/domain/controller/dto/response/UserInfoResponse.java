@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class UserInfoResponse {
 
-    private String username;
+    private String name;
     private String email;
     private Long classIdNumber;
     private Long birth;
@@ -19,7 +19,7 @@ public class UserInfoResponse {
 
     public UserInfoResponse(User user) {
         email = user.getEmail();
-        username = user.getUsername();
+        name = user.getName();
         classIdNumber = user.getClassIdNumber();
         birth = user.getBirth();
         majorField = user.getMajorField();

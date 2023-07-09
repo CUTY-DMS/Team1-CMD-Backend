@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("myPage")
-    public List<UserInfoResponse> myPage() {
+    public UserInfoResponse myPage() {
         return userService.myPage();
     }
 

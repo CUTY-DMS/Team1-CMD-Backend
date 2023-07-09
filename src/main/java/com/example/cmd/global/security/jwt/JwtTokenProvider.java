@@ -41,9 +41,9 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
 
-    public Token createToken(String userPk) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
-        //claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+    public Token createToken(String email,String role) {
+        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+        claims.put("roles", role); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
      String accessToken =Jwts.builder()
                 .setClaims(claims) // 정보 저장
@@ -57,7 +57,7 @@ public class JwtTokenProvider {
 
         return Token.builder().
                 accessToken(accessToken)
-                .key(userPk)
+                .key(email)
                 .build();
 
     }
