@@ -85,6 +85,14 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void modifyUserInfo(String name, Long birth, Long classIdNumber, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
+        this.name = name;
+        this.birth = birth;
+        this.classIdNumber = classIdNumber;
+        this.majorField = majorField;
+        this.clubName = clubName;
+    }
+
     public User(User user) {
         this.email = user.getEmail();
         this.name = user.getName();

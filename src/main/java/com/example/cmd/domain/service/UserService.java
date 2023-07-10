@@ -2,6 +2,7 @@ package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Admin;
@@ -93,6 +94,28 @@ public class UserService {
         }
         User user = userList.get(); // 첫 번째 결과를 사용하거나, 적절한 방식으로 결과를 선택하세요.
         return new UserInfoResponse(user);
+    }
+
+    @Transactional
+    public void modifyUserInfo(UserInfoRequest userInfoRequest) {
+
+        User currentUser = userFacade.getCurrentUser();
+        Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
+        if (userList.isEmpty()) {
+            throw new RuntimeException("Email Not Found");
+        }
+
+        User user = userList.get();
+
+
+        String name = userInfoRequest.getName();
+        Long birth = userInfoRequest.getBirth();
+        Long classIdNumber = userInfoRequest.getClassIdNumber();
+        String majorField = userInfoRequest.getMajorField();
+        String clubName = userInfoRequest.getClubName();
+
+        user.modifyUserInfo(name, birth, classIdNumber, majorField, clubName);
+        userRepository.save(user);
     }
 
 }
