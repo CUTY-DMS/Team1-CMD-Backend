@@ -4,7 +4,7 @@ import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.SignupRequest;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
-import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.UserFacade;
@@ -16,11 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +46,7 @@ public class UserService {
                         .birth(signupRequest.getBirth())
                         .classIdNumber(signupRequest.getClassIdNumber())
                         .clubName(signupRequest.getClubName())
+                        .admin(Admin.USER)
                         .roles(Collections.singletonList("ROLE_USER"))
                         .build()
         );

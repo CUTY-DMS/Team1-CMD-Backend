@@ -1,5 +1,5 @@
 package com.example.cmd.domain.entity;
 
-public enum Role {
+public enum Admin {
     ADMIN,USER
 }

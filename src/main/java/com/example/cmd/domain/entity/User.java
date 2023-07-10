@@ -2,7 +2,6 @@ package com.example.cmd.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,9 +30,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private final List<Notification> notificationList = new ArrayList<>();
 
-   /* @Enumerated(EnumType.STRING)
-    private Role role;
-*/
+    @Enumerated(EnumType.STRING)
+    private Admin admin;
+
     private Long classIdNumber;
 
     private Long birth;

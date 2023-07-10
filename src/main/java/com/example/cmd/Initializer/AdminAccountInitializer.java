@@ -1,6 +1,6 @@
 package com.example.cmd.Initializer;
 
-import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import java.util.Collections;
 public class AdminAccountInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
-    final Role role = Role.ADMIN;
 
 
     @Override
@@ -22,7 +21,8 @@ public class AdminAccountInitializer implements CommandLineRunner {
         if (!userRepository.existsByEmail("admin@example.com")) {
             User admin = User.builder()
                     .email("admin@example.com")
-                    .name("admin")
+                    .name("admin1")
+                    .admin(Admin.ADMIN)
                     .password("admin123")
                     .roles(Collections.singletonList("ROLE_ADMIN"))
                     .build();
