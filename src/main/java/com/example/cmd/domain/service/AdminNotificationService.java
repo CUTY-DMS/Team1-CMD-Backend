@@ -2,6 +2,7 @@ package com.example.cmd.domain.service;
 
 
 import com.example.cmd.domain.controller.dto.request.NotificationDeleteRequest;
+import com.example.cmd.domain.controller.dto.request.NotificationFixRequest;
 import com.example.cmd.domain.controller.dto.request.NotificationWriteRequest;
 import com.example.cmd.domain.controller.dto.request.SignupRequest;
 import com.example.cmd.domain.entity.Notification;
@@ -56,7 +57,29 @@ public class AdminNotificationService {
             notificationRepository.deleteById(notification.getId());
 
         } else {
-           throw new NoSuchElementException("사용자 혹은 시간이 맞지 않습니다.");
+            throw new NoSuchElementException("사용자 혹은 시간이 맞지 않습니다.");
         }
     }
+
+        @Transactional
+        public void fix(NotificationFixRequest notificationFixRequest) {
+            User currentUser = userFacade.getCurrentUser();
+            Optional<Notification> optionalNotification = notificationRepository.findByUserAndDateTime(currentUser, notificationFixRequest.getDateTime());
+            if (optionalNotification.isPresent()) {
+                Notification updatedNotification = Notification.builder()
+                        .id(optionalNotification.get().getId())
+                        .title(notificationFixRequest.getTitle())
+                        .contents(notificationFixRequest.getContents())
+                        .user(optionalNotification.get().getUser())
+                        .dateTime(optionalNotification.get().getDateTime())
+                        .build();
+
+                // 저장
+                notificationRepository.save(updatedNotification);
+                // 저장
+
+            }
+
+        }
+
 }

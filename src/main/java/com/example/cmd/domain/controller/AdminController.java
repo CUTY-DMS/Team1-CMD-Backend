@@ -1,9 +1,11 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.NotificationDeleteRequest;
+import com.example.cmd.domain.controller.dto.request.NotificationFixRequest;
 import com.example.cmd.domain.controller.dto.request.NotificationWriteRequest;
 import com.example.cmd.domain.service.AdminNotificationService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.NotFound;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +26,10 @@ public class AdminController {
         adminNotificationService.delete(notificationDeleteRequest);
     }
 
-
+@PatchMapping("fix")
+    public void fix(@RequestBody NotificationFixRequest notificationFixRequest){
+        adminNotificationService.fix(notificationFixRequest);
+}
 
 
 }

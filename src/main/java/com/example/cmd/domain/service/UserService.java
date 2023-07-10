@@ -11,12 +11,14 @@ import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -52,6 +54,7 @@ public class UserService {
         );
     }
 
+    @Transactional
     public Token login(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
@@ -64,6 +67,8 @@ public class UserService {
             throw new UsernameNotFoundException("로그인에 실패하였습니다.");
         }
     }
+
+
 
     private boolean isPasswordMatching(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

@@ -41,7 +41,7 @@ public class User implements UserDetails {
 
     private String clubName;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)//임시임 임시
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
@@ -49,12 +49,12 @@ public class User implements UserDetails {
 
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return this.roles.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+        }
     @Override
     public String getPassword() {
         return password;
