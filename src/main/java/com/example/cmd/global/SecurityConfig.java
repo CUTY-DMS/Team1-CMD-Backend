@@ -9,6 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
@@ -36,7 +38,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/board/{boardId}").authenticated()
                 .antMatchers("/comment").authenticated()
                 .antMatchers("/register").authenticated()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/admin/write").authenticated()
+                .antMatchers("/admin/write").hasRole("ADMIN")
                 //.antMatchers("/user/**").hasRole("USER")
                 .anyRequest().permitAll()
  //               .antMatchers("/**").permitAll()

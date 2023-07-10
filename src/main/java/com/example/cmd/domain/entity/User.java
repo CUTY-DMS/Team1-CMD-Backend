@@ -1,21 +1,22 @@
 package com.example.cmd.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-@RequiredArgsConstructor
+
 @Getter
 @Builder
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
@@ -26,10 +27,13 @@ public class User implements UserDetails {
     @Convert(converter = PasswordConverter.class)
     private String password;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private final List<Notification> notificationList = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING)
+   /* @Enumerated(EnumType.STRING)
     private Role role;
-
+*/
     private Long classIdNumber;
 
     private Long birth;
@@ -38,16 +42,20 @@ public class User implements UserDetails {
 
     private String clubName;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
-  /*  public String getEmail() {
-        return email;
-    }*/
+    // ...
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
-
     @Override
     public String getPassword() {
         return password;
@@ -82,7 +90,7 @@ public class User implements UserDetails {
         this.email = user.getEmail();
         this.name = user.getName();
         this.password = user.getPassword();
-        this.role = user.getRole();
+        this.roles = user.getRoles();
         this.classIdNumber = user.getClassIdNumber();
         this.birth = user.getBirth();
         this.majorField = user.getMajorField();

@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 // 토큰을 생성하고 검증하는 클래스입니다.
 // 해당 컴포넌트는 필터클래스에서 사전 검증을 거칩니다.
@@ -41,9 +42,9 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
 
-    public Token createToken(String email,String role) {
+    public Token createToken(String email, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
-        claims.put("roles", role); // 정보는 key / value 쌍으로 저장된다.
+        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
      String accessToken =Jwts.builder()
                 .setClaims(claims) // 정보 저장

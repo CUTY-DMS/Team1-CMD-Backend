@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class UserService {
                         .birth(signupRequest.getBirth())
                         .classIdNumber(signupRequest.getClassIdNumber())
                         .clubName(signupRequest.getClubName())
-                        .role(Role.USER)
+                        .roles(Collections.singletonList("ROLE_USER"))
                         .build()
         );
     }
@@ -56,7 +58,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(user.get().getEmail(), String.valueOf(user.get().getRole()));
+            Token token = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getRoles());
             System.out.println("user.get().getEmail() = " + user.get().getEmail());
             System.out.println("login success");
             return token;
@@ -89,4 +91,5 @@ public class UserService {
         User user = userList.get(); // 첫 번째 결과를 사용하거나, 적절한 방식으로 결과를 선택하세요.
         return new UserInfoResponse(user);
     }
+
 }
