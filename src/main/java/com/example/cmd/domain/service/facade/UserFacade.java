@@ -20,7 +20,14 @@ public class UserFacade {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+
     }
 
 
 }
+
+=======
+                .orElseThrow();
+    }
+}
+>>>>>>> main
