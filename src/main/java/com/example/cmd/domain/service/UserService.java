@@ -1,24 +1,22 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
-import com.example.cmd.domain.controller.dto.request.SignupRequest;
+import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
-import com.example.cmd.domain.entity.Admin;
+import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,7 +30,7 @@ public class UserService {
     private final UserFacade userFacade;
 
     @Transactional
-    public void signUp(SignupRequest signupRequest) {
+    public void userSignUp(UserSignupRequest signupRequest) {
         System.out.println("signupRequest = " + signupRequest);
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             System.out.println("중복");
@@ -48,18 +46,17 @@ public class UserService {
                         .birth(signupRequest.getBirth())
                         .classIdNumber(signupRequest.getClassIdNumber())
                         .clubName(signupRequest.getClubName())
-                        .admin(Admin.USER)
-                        .roles(Collections.singletonList("ROLE_USER"))
+                        .role(Role.ROLE_USER)
                         .build()
         );
     }
 
     @Transactional
-    public Token login(LoginRequest loginRequest) {
+    public Token userLogin(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getRoles());
+            Token token = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getRole());
             System.out.println("user.get().getEmail() = " + user.get().getEmail());
             System.out.println("login success");
             return token;

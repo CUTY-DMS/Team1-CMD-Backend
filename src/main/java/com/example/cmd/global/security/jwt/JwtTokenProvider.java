@@ -1,6 +1,7 @@
 package com.example.cmd.global.security.jwt;
 
 
+import com.example.cmd.domain.entity.Role;
 import com.example.cmd.global.security.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -42,7 +43,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
 
-    public Token createToken(String email, List<String> roles) {
+    public Token createToken(String email, Role roles) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();

@@ -1,11 +1,9 @@
 package com.example.cmd.domain.controller;
 
-import com.example.cmd.domain.controller.dto.request.NotificationDeleteRequest;
-import com.example.cmd.domain.controller.dto.request.NotificationFixRequest;
-import com.example.cmd.domain.controller.dto.request.NotificationWriteRequest;
-import com.example.cmd.domain.service.AdminNotificationService;
+import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.service.AdminService;
+import com.example.cmd.global.security.Token;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.NotFound;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,23 +11,31 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final AdminNotificationService adminNotificationService;
+    private final AdminService adminService;
 
+    @PostMapping("signup")
+    public void signup(@RequestBody AdminSignupRequest adminSignupRequest) {
+        adminService.adminSignup(adminSignupRequest);
+    }
 
+    @PostMapping("login")
+    public Token login(@RequestBody LoginRequest loginRequest){
+        return adminService.adminLogin(loginRequest);
+    }
     @PostMapping("write")
     public void write(@RequestBody NotificationWriteRequest notificationWriteRequest) {
-        adminNotificationService.write(notificationWriteRequest);
+        adminService.write(notificationWriteRequest);
     }
 
     @DeleteMapping("delete")
-    public void delete(@RequestBody NotificationDeleteRequest notificationDeleteRequest){
-        adminNotificationService.delete(notificationDeleteRequest);
+    public void delete(@RequestBody NotificationDeleteRequest notificationDeleteRequest) {
+        adminService.delete(notificationDeleteRequest);
     }
 
-@PatchMapping("fix")
-    public void fix(@RequestBody NotificationFixRequest notificationFixRequest){
-        adminNotificationService.fix(notificationFixRequest);
-}
+    @PatchMapping("fix")
+    public void fix(@RequestBody NotificationFixRequest notificationFixRequest) {
+        adminService.fix(notificationFixRequest);
+    }
 
 
 }

@@ -25,7 +25,7 @@ public class Notification {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "email")
-    private User user;
+    @JoinColumn(name = "admin_email")
+    private Admin admin;
 
 }
