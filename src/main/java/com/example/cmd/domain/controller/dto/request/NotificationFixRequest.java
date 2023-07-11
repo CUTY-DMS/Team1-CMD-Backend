@@ -10,6 +10,6 @@ import java.time.LocalDateTime;
 public class NotificationFixRequest {
 
     private String title;
-    private LocalDateTime dateTime;
+    private String dateTime;
     private String contents;
 }

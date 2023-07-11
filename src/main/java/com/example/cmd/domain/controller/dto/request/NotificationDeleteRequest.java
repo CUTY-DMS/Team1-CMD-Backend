@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 @Getter
 public class NotificationDeleteRequest {
     private String title;
-    private LocalDateTime dateTime;
+    private String dateTime;
 }

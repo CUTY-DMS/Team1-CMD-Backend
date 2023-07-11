@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,13 +41,15 @@ public class AdminService {
         Optional<Admin> userOptional = adminRepository.findByEmail(currentAdmin.getEmail());
         if (userOptional.isPresent()) {
             Admin admin = userOptional.get();
-
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
+            String formattedDateTime = now.format(formatter);
             notificationRepository.save(
                     Notification.builder()
                             .title(notificationWriteRequest.getTitle())
                             .contents(notificationWriteRequest.getContents())
                             .admin(admin)
-                            .dateTime(LocalDateTime.now())
+                            .dateTime(formattedDateTime)
                             .build()
             );
         } else {

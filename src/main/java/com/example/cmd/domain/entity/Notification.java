@@ -21,7 +21,7 @@ public class Notification {
     private Long id;
     private String title;
     private String contents;
-    private LocalDateTime dateTime;
+    private String dateTime;
 
     @ManyToOne
     @JsonIgnore
