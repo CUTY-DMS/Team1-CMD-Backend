@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class StudentListRequest {
-private Long gradeClass;
+    private Long gradeClass;
 
 }
