@@ -12,6 +12,7 @@ import com.example.cmd.domain.service.facade.AdminFacade;
 import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminService {
 
