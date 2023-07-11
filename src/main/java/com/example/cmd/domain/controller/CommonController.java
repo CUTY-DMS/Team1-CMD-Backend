@@ -16,8 +16,10 @@ public class CommonController {
 
     private final CommonService commonService;
 
-    @GetMapping("list/check")
+    @GetMapping("noti/check")
     public Notification checkList(@RequestBody NotificationFindRequest notificationFindRequest) {
         return commonService.getNotification(notificationFindRequest);
     }
+
+
 }
