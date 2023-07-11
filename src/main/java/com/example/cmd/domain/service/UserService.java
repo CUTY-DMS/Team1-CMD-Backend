@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+=======
+>>>>>>> main
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,17 @@ public class UserService {
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             System.out.println("중복");
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+=======
+        Optional<User> byUser = userRepository.findByEmail(signupRequest.getUsername());
+        if (byUser.isEmpty()) {
+            User user = User.builder()
+                    .email(signupRequest.getEmail())
+                    .username(signupRequest.getUsername())
+                    .password(signupRequest.getPassword())
+                    .role(Role.USER)
+                    .build();
+            userRepository.save(user);
+>>>>>>> main
         }
         System.out.println("signupRequest.getUsername() = " + signupRequest.getName());
         Long grade = signupRequest.getClassId() / 1000;
@@ -52,7 +65,6 @@ public class UserService {
                         .email(signupRequest.getEmail())
                         .name(signupRequest.getName())
                         .password(signupRequest.getPassword())
-                        .majorField(signupRequest.getMajorField())
                         .birth(signupRequest.getBirth())
                         .classes(classes)
                         .grade(grade)
@@ -134,4 +146,10 @@ public class UserService {
 
     }
 
+=======
+    public UserInfoResponse myPage() {
+        User currentUser = userFacade.currentUser();
+        return new UserInfoResponse(currentUser);
+    }
+>>>>>>> main
 }

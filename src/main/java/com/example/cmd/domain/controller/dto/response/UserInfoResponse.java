@@ -12,11 +12,16 @@ public class UserInfoResponse {
 
     private String name;
     private String email;
+<<<<<<< HEAD
+=======
+    private String password;
+>>>>>>> main
     private Long classIdNumber;
     private Long birth;
     private String majorField;
     private String clubName;
 
+<<<<<<< HEAD
     public UserInfoResponse(User user) {
         email = user.getEmail();
         name = user.getName();
@@ -24,5 +29,10 @@ public class UserInfoResponse {
         birth = user.getBirth();
         majorField = user.getMajorField();
         clubName = user.getClubName();
+=======
+
+    public UserInfoResponse(User user) {
+        email = user.getEmail();
+>>>>>>> main
     }
 }
