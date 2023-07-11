@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +46,10 @@ public class AdminService {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
             String formattedDateTime = now.format(formatter);
+            if(notificationRepository.findByAdminAndDateTime(admin,formattedDateTime).isPresent()){
+                System.out.println("fast");
+                throw new InputMismatchException("Too fast click");
+            }
             notificationRepository.save(
                     Notification.builder()
                             .title(notificationWriteRequest.getTitle())

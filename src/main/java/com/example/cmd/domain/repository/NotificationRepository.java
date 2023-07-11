@@ -11,4 +11,5 @@ import java.util.Optional;
 public interface NotificationRepository extends JpaRepository<Notification,Long> {
 
 Optional<Notification> findByAdminAndDateTime(Admin admin, String dateTime);
+Boolean existsByDateTime(String dateTime);
 }
