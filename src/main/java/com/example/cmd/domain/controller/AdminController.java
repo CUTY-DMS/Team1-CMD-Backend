@@ -1,6 +1,7 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
 import com.example.cmd.global.security.Token;
@@ -47,6 +48,10 @@ public class AdminController {
         return adminService.getStudentList(studentListRequest);
     }
 
+    @PatchMapping("infoChange")
+    public Admin infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
+        return adminService.adminInfoChange(adminInfoChangeRequest);
+    }
 }
 
 

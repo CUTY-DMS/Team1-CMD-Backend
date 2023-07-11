@@ -34,7 +34,8 @@ public class AdminService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
-private final UserRepository userRepository;
+    private final UserRepository userRepository;
+
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -45,7 +46,7 @@ private final UserRepository userRepository;
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
             String formattedDateTime = now.format(formatter);
-            if(notificationRepository.findByAdminAndDateTime(admin,formattedDateTime).isPresent()){
+            if (notificationRepository.findByAdminAndDateTime(admin, formattedDateTime).isPresent()) {
                 System.out.println("fast");
                 throw new InputMismatchException("Too fast click");
             }
@@ -65,7 +66,7 @@ private final UserRepository userRepository;
 
     @Transactional
     public void delete(NotificationDeleteRequest notificationDeleteRequest) {
-         Admin currentAdmin = adminFacade.getCurrentAdmin();
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
         Optional<Notification> optionalNotification = notificationRepository.findByAdminAndDateTime(currentAdmin, notificationDeleteRequest.getDateTime());
         if (optionalNotification.isPresent()) {
             Notification notification = optionalNotification.get();
@@ -104,7 +105,7 @@ private final UserRepository userRepository;
             System.out.println("중복");
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
         }
-        if(!Objects.equals(adminSignupRequest.getCode(), "abcd1234")){
+        if (!Objects.equals(adminSignupRequest.getCode(), "abcd1234")) {
             throw new IllegalArgumentException("잘못된 코드입니다.");
         }
         System.out.println("signupRequest.getUsername() = " + adminSignupRequest.getName());
@@ -141,14 +142,22 @@ private final UserRepository userRepository;
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<User> getStudentList(StudentListRequest studentListRequest){
-        Long grade = studentListRequest.getGradeClass()/10;
-        Long classes = studentListRequest.getGradeClass()%10;
+    public List<User> getStudentList(StudentListRequest studentListRequest) {
+        Long grade = studentListRequest.getGradeClass() / 10;
+        Long classes = studentListRequest.getGradeClass() % 10;
         List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
         if (users.isEmpty()) {
             throw new IllegalArgumentException("No users found for the given grade and classes");
         }
 
         return users;
+    }
+
+    @Transactional
+    public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+        currentAdmin.modifyAdminInfo(adminInfoChangeRequest.getName(), adminInfoChangeRequest.getBirth(),
+                adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
+        return currentAdmin;
     }
 }
