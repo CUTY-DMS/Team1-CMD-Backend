@@ -22,6 +22,7 @@ public class AdminController {
     public Token login(@RequestBody LoginRequest loginRequest){
         return adminService.adminLogin(loginRequest);
     }
+
     @PostMapping("write")
     public void write(@RequestBody NotificationWriteRequest notificationWriteRequest) {
         adminService.write(notificationWriteRequest);

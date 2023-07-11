@@ -3,10 +3,12 @@ package com.example.cmd.domain.service;
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
+import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordConverter passwordConverter;
     private final UserFacade userFacade;
+    private final NotificationRepository notificationRepository;
 
     @Transactional
     public void userSignUp(UserSignupRequest signupRequest) {
@@ -113,6 +118,15 @@ public class UserService {
 
         user.modifyUserInfo(name, birth, classIdNumber, majorField, clubName);
         userRepository.save(user);
+    }
+
+    public List<NotificationResponse> findNotification() {
+
+        return notificationRepository.findAll()
+                .stream()
+                .map(NotificationResponse::new)
+                .collect(Collectors.toList());
+
     }
 
 }

@@ -3,11 +3,14 @@ package com.example.cmd.domain.controller;
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
+import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
 import com.example.cmd.global.security.Token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,4 +38,10 @@ public class UserController {
     public void modifyUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
         userService.modifyUserInfo(userInfoRequest);
     }
+
+    @GetMapping("/AllNotification")
+    public List<NotificationResponse> findNotification() {
+        return userService.findNotification();
+    }
+    
 }
