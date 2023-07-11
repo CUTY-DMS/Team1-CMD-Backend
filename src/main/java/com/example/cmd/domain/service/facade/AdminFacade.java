@@ -1,33 +1,22 @@
 package com.example.cmd.domain.service.facade;
 
 import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.AdminRepository;
-import com.example.cmd.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-
 @RequiredArgsConstructor
 @Component
-public class UserFacade {
+public class AdminFacade {
 
-    private final UserRepository userRepository;
-    public User getCurrentUser() {
+    private final AdminRepository adminRepository;
+
+    public Admin getCurrentAdmin() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         System.out.println("usernameeda = " + email);
-        return userRepository.findByEmail(email)
+        return adminRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-
-    }
-
-
-}
-
-=======
-                .orElseThrow();
     }
 }
->>>>>>> main

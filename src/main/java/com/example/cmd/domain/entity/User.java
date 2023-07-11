@@ -1,72 +1,53 @@
 package com.example.cmd.domain.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Collection;
+import javax.persistence.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-@RequiredArgsConstructor
 @Getter
 @Builder
 @AllArgsConstructor
-
+@NoArgsConstructor
 public class User implements UserDetails {
 
-    @Id
+@Id
+    @Column(name = "user_email")
     private String email;
 
-    private String username;
+    @Column(name = "user_name")
+    private String name;
 
     @Convert(converter = PasswordConverter.class)
+    @Column(name = "user_password")
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
-    private Long classIdNumber;
-<<<<<<< HEAD
+    private Long grade;
 
+    private Long classes;
+
+    private Long number;
+    @Column(name = "user_birth")
     private Long birth;
 
     private String majorField;
 
     private String clubName;
 
-
-=======
-
-    private Long birth;
-
-    private String majorField;
-
-    private String clubName;
-
-    public User(User user) {
-        this.email = user.getEmail();
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.role = user.getRole();
-        this.classIdNumber = user.getClassIdNumber();
-        this.birth = user.getBirth();
-        this.majorField = user.getMajorField();
-        this.clubName = user.getClubName();
-    }
-
->>>>>>> main
-    public String getEmail() {
-        return email;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(role.name()));
+        return authorities;
     }
 
     @Override
@@ -74,8 +55,9 @@ public class User implements UserDetails {
         return password;
     }
 
+    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -98,12 +80,22 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void modifyUserInfo(String name, Long birth, Long grade, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
+        this.name = name;
+        this.birth = birth;
+        this.grade = grade;
+        this.majorField = majorField;
+        this.clubName = clubName;
+    }
+
     public User(User user) {
         this.email = user.getEmail();
-        this.username = user.getUsername();
+        this.name = user.getName();
         this.password = user.getPassword();
         this.role = user.getRole();
-        this.classIdNumber = user.getClassIdNumber();
+        this.grade = user.getGrade();
+        this.classes = user.getClasses();
+        this.number= user.getNumber();
         this.birth = user.getBirth();
         this.majorField = user.getMajorField();
         this.clubName = user.getClubName();

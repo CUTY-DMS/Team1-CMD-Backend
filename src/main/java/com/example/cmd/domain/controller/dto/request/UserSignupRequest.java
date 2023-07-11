@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor()
-public class SignupRequest {
+public class UserSignupRequest {
 
-    private String username;
+    private String name;
     private String email;
     private String password;
-    private Long classIdNumber;
+    private Long classId;
     private Long birth;
     private String majorField;
     private String clubName;

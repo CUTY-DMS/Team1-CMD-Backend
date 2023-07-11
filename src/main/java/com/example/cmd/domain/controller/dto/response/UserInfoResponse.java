@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class UserInfoResponse {
 
-    private String username;
+    private String name;
     private String email;
 <<<<<<< HEAD
 =======
@@ -24,8 +24,8 @@ public class UserInfoResponse {
 <<<<<<< HEAD
     public UserInfoResponse(User user) {
         email = user.getEmail();
-        username = user.getUsername();
-        classIdNumber = user.getClassIdNumber();
+        name = user.getName();
+        classIdNumber = user.getNumber();
         birth = user.getBirth();
         majorField = user.getMajorField();
         clubName = user.getClubName();
