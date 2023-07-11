@@ -4,6 +4,7 @@ import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
 import com.example.cmd.global.security.Token;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +42,11 @@ public class AdminController {
         adminService.fix(notificationFixRequest);
     }
 
-    @PostMapping("student/list")
+    @GetMapping("student/list")
     public List<User> studentList(@RequestBody StudentListRequest studentListRequest){
         return adminService.getStudentList(studentListRequest);
     }
+
 }
 
 
