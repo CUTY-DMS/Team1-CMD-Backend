@@ -30,4 +30,8 @@ public class UserController {
         return userService.myPage();
     }
 
+    @PatchMapping("modifyUserInfo")
+    public void modifyUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
+        userService.modifyUserInfo(userInfoRequest);
+    }
 }

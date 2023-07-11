@@ -92,4 +92,26 @@ public class UserService {
         return new UserInfoResponse(user);
     }
 
+    @Transactional
+    public void modifyUserInfo(UserInfoRequest userInfoRequest) {
+
+        User currentUser = userFacade.getCurrentUser();
+        Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
+        if (userList.isEmpty()) {
+            throw new RuntimeException("Email Not Found");
+        }
+
+        User user = userList.get();
+
+
+        String name = userInfoRequest.getName();
+        Long birth = userInfoRequest.getBirth();
+        Long classIdNumber = userInfoRequest.getClassIdNumber();
+        String majorField = userInfoRequest.getMajorField();
+        String clubName = userInfoRequest.getClubName();
+
+        user.modifyUserInfo(name, birth, classIdNumber, majorField, clubName);
+        userRepository.save(user);
+    }
+
 }
