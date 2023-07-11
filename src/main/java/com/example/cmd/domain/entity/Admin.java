@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
 public class Admin implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "admin_email",unique = true)
+    @Column(name = "admin_email")
     private String email;
     @Column(name = "admin_name")
     private String name;
