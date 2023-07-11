@@ -8,12 +8,14 @@ import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
+import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.AdminFacade;
 import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.global.security.Token;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -35,7 +34,7 @@ public class AdminService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
-
+private final UserRepository userRepository;
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -56,6 +55,7 @@ public class AdminService {
                             .contents(notificationWriteRequest.getContents())
                             .admin(admin)
                             .dateTime(formattedDateTime)
+                            .noti(notificationWriteRequest.getNoti())
                             .build()
             );
         } else {
@@ -139,5 +139,16 @@ public class AdminService {
     private boolean isPasswordMatching(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
+    public List<User> getStudentList(StudentListRequest studentListRequest){
+        Long grade = studentListRequest.getGradeClass()/10;
+        Long classes = studentListRequest.getGradeClass()%10;
+        List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
+        if (users.isEmpty()) {
+            throw new IllegalArgumentException("No users found for the given grade and classes");
+        }
+
+        return users;
     }
 }

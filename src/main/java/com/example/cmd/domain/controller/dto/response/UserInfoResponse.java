@@ -20,7 +20,7 @@ public class UserInfoResponse {
     public UserInfoResponse(User user) {
         email = user.getEmail();
         name = user.getName();
-        classIdNumber = user.getClassIdNumber();
+        classIdNumber = user.getNumber();
         birth = user.getBirth();
         majorField = user.getMajorField();
         clubName = user.getClubName();
