@@ -1,6 +1,7 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
+import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
@@ -28,6 +29,11 @@ public class UserController {
     @GetMapping("myPage")
     public UserInfoResponse myPage() {
         return userService.myPage();
+    }
+
+    @PatchMapping("modifyUserInfo")
+    public void modifyUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
+        userService.modifyUserInfo(userInfoRequest);
     }
 
 }
