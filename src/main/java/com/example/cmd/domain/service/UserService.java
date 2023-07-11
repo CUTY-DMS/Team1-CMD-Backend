@@ -37,12 +37,16 @@ public class UserService {
 
     @Transactional
     public void userSignUp(UserSignupRequest signupRequest) {
+
         System.out.println("signupRequest = " + signupRequest);
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             System.out.println("중복");
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
         }
         System.out.println("signupRequest.getUsername() = " + signupRequest.getName());
+        Long grade = signupRequest.getClassId() / 1000;
+        Long classes = (signupRequest.getClassId() / 100)%10;
+        Long number = signupRequest.getClassId() % 100;
         userRepository.save(
                 User.builder()
                         .email(signupRequest.getEmail())
@@ -50,9 +54,9 @@ public class UserService {
                         .password(signupRequest.getPassword())
                         .majorField(signupRequest.getMajorField())
                         .birth(signupRequest.getBirth())
-                        .classes(signupRequest.getClasses())
-                        .grade(signupRequest.getGrade())
-                        .number(signupRequest.getNumber())
+                        .classes(classes)
+                        .grade(grade)
+                        .number(number)
                         .clubName(signupRequest.getClubName())
                         .role(Role.ROLE_USER)
                         .build()
@@ -74,21 +78,20 @@ public class UserService {
     }
 
 
-
     private boolean isPasswordMatching(String rawPassword, String encodedPassword) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-/*    public List<UserInfoResponse> myPage() {
+    /*    public List<UserInfoResponse> myPage() {
 
-        User currentUser = userFacade.getCurrentUser();
+            User currentUser = userFacade.getCurrentUser();
 
-        return userRepository.findByEmail(currentUser.getEmail())
-                .stream()
-                .map(UserInfoResponse::new)
-                .collect(Collectors.toList());
-    }*/
+            return userRepository.findByEmail(currentUser.getEmail())
+                    .stream()
+                    .map(UserInfoResponse::new)
+                    .collect(Collectors.toList());
+        }*/
     public UserInfoResponse myPage() {
         User currentUser = userFacade.getCurrentUser();
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());

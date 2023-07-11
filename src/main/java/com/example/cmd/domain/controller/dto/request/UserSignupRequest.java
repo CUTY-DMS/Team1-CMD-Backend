@@ -10,9 +10,7 @@ public class UserSignupRequest {
     private String name;
     private String email;
     private String password;
-    private Long classes;
-    private Long grade;
-    private Long number;
+    private Long classId;
     private Long birth;
     private String majorField;
     private String clubName;
