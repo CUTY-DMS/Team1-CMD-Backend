@@ -17,7 +17,10 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
-    @Column(name = "user_email")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "user_email",unique = true)
     private String email;
 
     @Column(name = "user_name")
