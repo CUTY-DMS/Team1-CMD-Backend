@@ -30,7 +30,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private Long classIdNumber;
+    private Long grade;
+
+    private Long classes;
+
+    private Long number;
     @Column(name = "user_birth")
     private Long birth;
 
@@ -76,10 +80,10 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void modifyUserInfo(String name, Long birth, Long classIdNumber, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
+    public void modifyUserInfo(String name, Long birth, Long grade, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;
-        this.classIdNumber = classIdNumber;
+        this.grade = grade;
         this.majorField = majorField;
         this.clubName = clubName;
     }
@@ -89,7 +93,9 @@ public class User implements UserDetails {
         this.name = user.getName();
         this.password = user.getPassword();
         this.role = user.getRole();
-        this.classIdNumber = user.getClassIdNumber();
+        this.grade = user.getGrade();
+        this.classes = user.getClasses();
+        this.number= user.getNumber();
         this.birth = user.getBirth();
         this.majorField = user.getMajorField();
         this.clubName = user.getClubName();
