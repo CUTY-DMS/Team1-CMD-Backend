@@ -52,6 +52,11 @@ public class AdminController {
     public Admin infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
         return adminService.adminInfoChange(adminInfoChangeRequest);
     }
+
+    @GetMapping("myPage")
+    public Admin myPage(){
+        return adminService.adminInfo();
+    }
 }
 
 

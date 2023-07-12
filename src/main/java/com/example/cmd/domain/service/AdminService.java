@@ -160,4 +160,8 @@ public class AdminService {
                 adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
         return currentAdmin;
     }
+
+    public Admin adminInfo(){
+        return adminFacade.getCurrentAdmin();
+    }
 }
