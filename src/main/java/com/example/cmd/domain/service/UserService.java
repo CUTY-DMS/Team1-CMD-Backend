@@ -114,7 +114,6 @@ public class UserService {
 
         User user = userList.get();
 
-
         String name = userInfoRequest.getName();
         Long birth = userInfoRequest.getBirth();
         Long classId = userInfoRequest.getClassId();
