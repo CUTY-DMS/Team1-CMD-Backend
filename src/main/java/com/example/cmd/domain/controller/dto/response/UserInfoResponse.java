@@ -12,7 +12,7 @@ public class UserInfoResponse {
 
     private String name;
     private String email;
-    private Long classIdNumber;
+    private Long classId;
     private Long birth;
     private String majorField;
     private String clubName;
@@ -20,7 +20,7 @@ public class UserInfoResponse {
     public UserInfoResponse(User user) {
         email = user.getEmail();
         name = user.getName();
-        classIdNumber = user.getNumber();
+        classId = user.getClassId();
         birth = user.getBirth();
         majorField = user.getMajorField();
         clubName = user.getClubName();

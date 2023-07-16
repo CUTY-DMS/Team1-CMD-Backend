@@ -35,6 +35,8 @@ public class User implements UserDetails {
     private Long classes;
 
     private Long number;
+
+    private Long classId;
     @Column(name = "user_birth")
     private Long birth;
 
