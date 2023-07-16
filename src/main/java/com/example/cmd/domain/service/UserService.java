@@ -56,6 +56,7 @@ public class UserService {
                         .classes(classes)
                         .grade(grade)
                         .number(number)
+                        .classId(signupRequest.getClassId())
                         .clubName(signupRequest.getClubName())
                         .role(Role.ROLE_USER)
                         .build()
