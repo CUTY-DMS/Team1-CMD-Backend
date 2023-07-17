@@ -39,7 +39,7 @@ public class UserController {
         userService.modifyUserInfo(userInfoRequest);
     }
 
-    @GetMapping("/AllNoti")
+    @GetMapping("/allNoti")
     public List<NotificationResponse> findNotification() {
         return userService.findNotification();
     }

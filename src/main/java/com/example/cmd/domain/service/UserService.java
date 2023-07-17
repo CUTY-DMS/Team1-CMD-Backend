@@ -19,7 +19,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -57,6 +56,7 @@ public class UserService {
                         .classes(classes)
                         .grade(grade)
                         .number(number)
+                        .classId(signupRequest.getClassId())
                         .clubName(signupRequest.getClubName())
                         .role(Role.ROLE_USER)
                         .build()
@@ -114,14 +114,13 @@ public class UserService {
 
         User user = userList.get();
 
-
         String name = userInfoRequest.getName();
         Long birth = userInfoRequest.getBirth();
-        Long classIdNumber = userInfoRequest.getClassIdNumber();
+        Long classId = userInfoRequest.getClassId();
         String majorField = userInfoRequest.getMajorField();
         String clubName = userInfoRequest.getClubName();
 
-        user.modifyUserInfo(name, birth, classIdNumber, majorField, clubName);
+        user.modifyUserInfo(name, birth, classId, majorField, clubName);
         userRepository.save(user);
     }
 
