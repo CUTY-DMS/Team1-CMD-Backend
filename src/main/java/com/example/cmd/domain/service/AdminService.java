@@ -55,6 +55,8 @@ public class AdminService {
                             .title(notificationWriteRequest.getTitle())
                             .contents(notificationWriteRequest.getContents())
                             .admin(admin)
+                            .classes(notificationWriteRequest.getClasses())
+                            .grade(notificationWriteRequest.getGrade())
                             .dateTime(formattedDateTime)
                             .noti(notificationWriteRequest.getNoti())
                             .build()

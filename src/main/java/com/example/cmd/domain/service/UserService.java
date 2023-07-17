@@ -5,7 +5,6 @@ import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.entity.Noti;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
@@ -86,15 +85,6 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    /*    public List<UserInfoResponse> myPage() {
-
-            User currentUser = userFacade.getCurrentUser();
-
-            return userRepository.findByEmail(currentUser.getEmail())
-                    .stream()
-                    .map(UserInfoResponse::new)
-                    .collect(Collectors.toList());
-        }*/
     public UserInfoResponse myPage() {
         User currentUser = userFacade.getCurrentUser();
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
@@ -129,6 +119,8 @@ public class UserService {
 
     public List<NotificationResponse> findNotification() {
 
+        User currentUser = userFacade.getCurrentUser();
+
         return notificationRepository.findAll()
                 .stream()
                 .map(NotificationResponse::new)
@@ -140,7 +132,7 @@ public class UserService {
 
         User currentUser = userFacade.getCurrentUser();
 
-        return notificationRepository.findAllByNoti(CLASS)//, currentUser.getClasses(), currentUser.getGrade()
+        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, currentUser.getClasses(), currentUser.getGrade())
                 .stream()
                 .map(NotificationResponse::new)
                 .collect(Collectors.toList());

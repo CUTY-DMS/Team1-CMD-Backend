@@ -12,5 +12,6 @@ public class NotificationWriteRequest
     private String title;
     private Noti noti;
     private String contents;
-
+    private Long classes;
+    private Long grade;
 }
