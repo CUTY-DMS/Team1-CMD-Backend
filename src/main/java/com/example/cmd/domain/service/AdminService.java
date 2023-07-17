@@ -20,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.mail.SimpleMailMessage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,7 +35,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-
+private JavaMail javaMailService;
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -160,8 +160,30 @@ public class AdminService {
                 adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
         return currentAdmin;
     }
+@Transactional
+    public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
 
-    public Admin adminInfo(){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+        if (isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
+            throw new IllegalArgumentException("not equal password and oldpassword");
+        }
+        if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
+            throw new IllegalArgumentException("not equal password and repassword");
+        }
+        adminRepository.save(
+                Admin.builder()
+                        .password(passwordChangeRequest.getNewPassword())
+                        .build()
+        );
+    }
+
+    public Admin adminInfo() {//나중에 어드민인포에 뭐 필요한지 보고 그거만 보내도록 수정할듯?지금은 뭐만 보내는지 몰라서
         return adminFacade.getCurrentAdmin();
+    }
+    public void findPassword(String email){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+    Optional<Admin> admin = adminRepository.findByEmail(email);
+
+
     }
 }

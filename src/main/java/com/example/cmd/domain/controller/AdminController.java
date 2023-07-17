@@ -57,6 +57,19 @@ public class AdminController {
     public Admin myPage(){
         return adminService.adminInfo();
     }
+
+    @PatchMapping("password/change")
+    public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
+        adminService.passwordChange(passwordChangeRequest);
+    }
+
+    @GetMapping("/mailCheck")
+    public String mailCheck(String email){
+        System.out.println("이메일 인즈 요청");
+        System.out.println("이메일 인증 이매일:"+email);
+        adminService.
+    }
+
 }
 
 
