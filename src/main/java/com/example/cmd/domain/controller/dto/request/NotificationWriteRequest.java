@@ -12,4 +12,5 @@ public class NotificationWriteRequest
     private String title;
     private Noti noti;
     private String contents;
+
 }

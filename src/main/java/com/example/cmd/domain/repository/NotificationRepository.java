@@ -1,6 +1,7 @@
 package com.example.cmd.domain.repository;
 
 import com.example.cmd.domain.entity.Admin;
+import com.example.cmd.domain.entity.Noti;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,7 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
 
 Optional<Notification> findByAdminAndDateTime(Admin admin, String dateTime);
 Boolean existsByDateTime(String dateTime);
+
+    Optional<Notification> findAllByNoti(Noti ClASS);
+    //    Optional<Notification> findByNotiAndClassesAndGrade(Noti ClASS, Long classes, Long grade);
 }

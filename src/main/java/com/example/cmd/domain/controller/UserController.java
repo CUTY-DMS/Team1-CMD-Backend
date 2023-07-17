@@ -34,7 +34,7 @@ public class UserController {
         return userService.myPage();
     }
 
-    @PatchMapping("modifyUserInfo")
+    @PatchMapping("infoChange")
     public void modifyUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
         userService.modifyUserInfo(userInfoRequest);
     }
@@ -43,5 +43,9 @@ public class UserController {
     public List<NotificationResponse> findNotification() {
         return userService.findNotification();
     }
-    
+
+    @GetMapping("/classNoti")
+    public List<NotificationResponse> findClassNotification() {
+        return userService.findClassNotification();
+    }
 }

@@ -5,6 +5,7 @@ import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.entity.Noti;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.cmd.domain.entity.Noti.CLASS;
 
 @Service
 @RequiredArgsConstructor
@@ -133,4 +136,15 @@ public class UserService {
 
     }
 
+    public List<NotificationResponse> findClassNotification() {
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return notificationRepository.findAllByNoti(CLASS)//, currentUser.getClasses(), currentUser.getGrade()
+                .stream()
+                .map(NotificationResponse::new)
+                .collect(Collectors.toList());
+    }
+
 }
+
