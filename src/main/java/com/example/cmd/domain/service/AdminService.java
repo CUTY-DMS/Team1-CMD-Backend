@@ -3,6 +3,7 @@ package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
@@ -142,19 +143,22 @@ public class AdminService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<UserInfoResponse> getStudentList(StudentListRequest studentListRequest) {
-        /*Long grade = studentListRequest.getGradeClass() / 10;
+    public List<UserListResponse> getStudentList(StudentListRequest studentListRequest) {
+        Long grade = studentListRequest.getGradeClass() / 10;
         Long classes = studentListRequest.getGradeClass() % 10;
-        List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
+        List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
         if (users.isEmpty()) {
             throw new IllegalArgumentException("No users found for the given grade and classes");
-        }*/
+        }
 
-        return userRepository.findAll()
-                .stream()
-                .map(UserInfoResponse::new)
-                .collect(Collectors.toList());
+        return users;
     }
+
+        /*return userRepository.findAll()
+                .stream()
+                .map(UserListResponse::new)
+                .collect(Collectors.toList());
+    }*/
 
     @Transactional
     public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {

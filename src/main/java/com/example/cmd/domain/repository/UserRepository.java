@@ -1,5 +1,6 @@
 package com.example.cmd.domain.repository;
 
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -13,5 +14,5 @@ public interface UserRepository extends JpaRepository<User,String> {
     Optional<User> findByName(String name);
     Optional<User> findByEmail(String email);
 
-    List<User> findAllByGradeAndClasses(Long grade, Long classes);
+    List<UserListResponse> findAllByGradeAndClasses(Long grade, Long classes);
 }

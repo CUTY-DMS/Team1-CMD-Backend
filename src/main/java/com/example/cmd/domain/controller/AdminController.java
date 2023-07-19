@@ -2,6 +2,7 @@ package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
@@ -44,7 +45,7 @@ public class AdminController {
     }
 
     @GetMapping("student/list")
-    public List<UserInfoResponse> studentList(@RequestBody StudentListRequest studentListRequest){
+    public List<UserListResponse> studentList(@RequestBody StudentListRequest studentListRequest){
         return adminService.getStudentList(studentListRequest);
     }
 

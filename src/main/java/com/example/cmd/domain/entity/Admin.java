@@ -38,8 +38,6 @@ public class Admin implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-
-
     private Long teachGrade;
 
     private Long teachClass;
