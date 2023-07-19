@@ -71,7 +71,6 @@ public class UserService {
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
             TokenResponse token = jwtTokenProvider.createAccessToken(user.get().getEmail(), user.get().getRole());
-            System.out.println("user.get().getEmail() = " + user.get().getEmail());
             System.out.println("login success");
             return token;
         } else {

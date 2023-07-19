@@ -24,9 +24,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 @Component
 public class JwtTokenProvider {
-
-    private final JwtProperties jwtProperties;
-
     private String accessSecretKey = "cmdproject";
 
     // 토큰 유효시간 30분

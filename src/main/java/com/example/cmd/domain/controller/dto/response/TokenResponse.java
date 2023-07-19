@@ -12,6 +12,6 @@ public class TokenResponse {
 
     private String key;
 
-    private String refreshToken;
+    //private String refreshToken;
 
 }

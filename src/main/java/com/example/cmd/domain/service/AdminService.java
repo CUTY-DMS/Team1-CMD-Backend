@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@CrossOrigin
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
@@ -110,7 +109,7 @@ public class AdminService {
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
         }
         if (!Objects.equals(adminSignupRequest.getCode(), "abcd1234")) {
-            throw new IllegalArgumentException("잘못된 코드입니다.");
+            throw new IllegalArgumentException("wrong code");
         }
         System.out.println("signupRequest.getUsername() = " + adminSignupRequest.getName());
         adminRepository.save(
