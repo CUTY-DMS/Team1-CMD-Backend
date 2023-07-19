@@ -11,7 +11,7 @@ import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -66,11 +66,11 @@ public class UserService {
     }
 
     @Transactional
-    public Token userLogin(LoginRequest loginRequest) {
+    public TokenResponse userLogin(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getRole());
+            TokenResponse token = jwtTokenProvider.createAccessToken(user.get().getEmail(), user.get().getRole());
             System.out.println("user.get().getEmail() = " + user.get().getEmail());
             System.out.println("login success");
             return token;

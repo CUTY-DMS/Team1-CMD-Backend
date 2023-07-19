@@ -2,6 +2,7 @@ package com.example.cmd.domain.service;
 
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
@@ -10,20 +11,17 @@ import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.mail.SimpleMailMessage;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -35,7 +33,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-private JavaMail javaMailService;
+    //private JavaMail javaMailService;
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -126,11 +124,11 @@ private JavaMail javaMailService;
     }
 
     @Transactional
-    public Token adminLogin(LoginRequest loginRequest) {
+    public TokenResponse adminLogin(LoginRequest loginRequest) {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(admin.get().getEmail(), admin.get().getRole());
+            TokenResponse token = jwtTokenProvider.createAccessToken(admin.get().getEmail(), admin.get().getRole());
             System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
@@ -144,15 +142,18 @@ private JavaMail javaMailService;
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<User> getStudentList(StudentListRequest studentListRequest) {
-        Long grade = studentListRequest.getGradeClass() / 10;
+    public List<UserInfoResponse> getStudentList(StudentListRequest studentListRequest) {
+        /*Long grade = studentListRequest.getGradeClass() / 10;
         Long classes = studentListRequest.getGradeClass() % 10;
         List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
         if (users.isEmpty()) {
             throw new IllegalArgumentException("No users found for the given grade and classes");
-        }
+        }*/
 
-        return users;
+        return userRepository.findAll()
+                .stream()
+                .map(UserInfoResponse::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional
