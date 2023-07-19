@@ -10,6 +10,8 @@ import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
@@ -42,7 +44,7 @@ public class UserService {
         System.out.println("signupRequest = " + signupRequest);
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             System.out.println("중복");
-            throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+            throw EmailAlreadyExistException.EXCEPTION;
         }
         System.out.println("signupRequest.getUsername() = " + signupRequest.getName());
         Long grade = signupRequest.getClassId() / 1000;
@@ -74,7 +76,7 @@ public class UserService {
             System.out.println("login success");
             return token;
         } else {
-            throw new UsernameNotFoundException("로그인에 실패하였습니다.");
+            throw UserNotFoundException.EXCEPTION;
         }
     }
 
@@ -89,7 +91,7 @@ public class UserService {
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
             // 예외 처리 또는 null 등의 처리를 수행해야 합니다.
-            return null; // 또는 원하는 방식으로 예외 처리
+            throw UserNotFoundException.EXCEPTION; // 또는 원하는 방식으로 예외 처리
         }
         User user = userList.get(); // 첫 번째 결과를 사용하거나, 적절한 방식으로 결과를 선택하세요.
         return new UserInfoResponse(user);
@@ -101,7 +103,7 @@ public class UserService {
         User currentUser = userFacade.getCurrentUser();
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
-            throw new RuntimeException("Email Not Found");
+            throw UserNotFoundException.EXCEPTION;
         }
 
         User user = userList.get();

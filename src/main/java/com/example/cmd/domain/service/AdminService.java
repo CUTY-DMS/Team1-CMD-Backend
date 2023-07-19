@@ -2,29 +2,30 @@ package com.example.cmd.domain.service;
 
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
+import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
+import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
+import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
+import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.AdminFacade;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -76,7 +77,7 @@ public class AdminService {
             notificationRepository.deleteById(notification.getId());
 
         } else {
-            throw new NoSuchElementException("사용자 혹은 시간이 맞지 않습니다.");
+            throw NotificationNotFoundException.EXCEPTION;
         }
     }
 
@@ -106,10 +107,10 @@ public class AdminService {
         System.out.println("signupRequest = " + adminSignupRequest);
         if (adminRepository.existsByEmail(adminSignupRequest.getEmail())) {
             System.out.println("중복");
-            throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+            throw EmailAlreadyExistException.EXCEPTION;
         }
         if (!Objects.equals(adminSignupRequest.getCode(), "abcd1234")) {
-            throw new IllegalArgumentException("wrong code");
+            throw CodeMismatchException.EXCEPTION;
         }
         System.out.println("signupRequest.getUsername() = " + adminSignupRequest.getName());
         adminRepository.save(
@@ -136,7 +137,7 @@ public class AdminService {
             System.out.println("login success");
             return token;
         } else {
-            throw new UsernameNotFoundException("로그인에 실패하였습니다.");
+            throw AdminNotFoundException.EXCEPTION;
         }
     }
 
@@ -150,7 +151,7 @@ public class AdminService {
         Long classes = studentListRequest.getGradeClass() % 10;
         List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
         if (users.isEmpty()) {
-            throw new IllegalArgumentException("No users found for the given grade and classes");
+            throw UserNotFoundException.EXCEPTION;
         }
 
         return users;
@@ -174,10 +175,10 @@ public class AdminService {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
         if (isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
-            throw new IllegalArgumentException("not equal password and oldpassword");
+            throw PasswordMismatch.EXCEPTION;
         }
         if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
-            throw new IllegalArgumentException("not equal password and repassword");
+            throw PasswordMismatch.EXCEPTION;
         }
         adminRepository.save(
                 Admin.builder()
