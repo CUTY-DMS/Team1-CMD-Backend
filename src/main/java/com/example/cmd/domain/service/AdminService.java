@@ -1,6 +1,5 @@
 package com.example.cmd.domain.service;
 
-
 import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
@@ -94,12 +93,10 @@ public class AdminService {
                     .dateTime(optionalNotification.get().getDateTime())
                     .build();
 
-            // 저장
             notificationRepository.save(updatedNotification);
             // 저장
 
         }
-
     }
 
     @Transactional
@@ -157,18 +154,22 @@ public class AdminService {
         return users;
     }
 
-        /*return userRepository.findAll()
-                .stream()
-                .map(UserListResponse::new)
-                .collect(Collectors.toList());
-    }*/
 
     @Transactional
     public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-        currentAdmin.modifyAdminInfo(adminInfoChangeRequest.getName(), adminInfoChangeRequest.getBirth(),
-                adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
+
+        if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+
+        currentAdmin.modifyAdminInfo(
+                adminInfoChangeRequest.getName(),
+                adminInfoChangeRequest.getBirth(),
+                adminInfoChangeRequest.getTeachClass(),
+                adminInfoChangeRequest.getTeachGrade());
         return currentAdmin;
+
     }
 @Transactional
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
@@ -190,10 +191,10 @@ public class AdminService {
     public Admin adminInfo() {//나중에 어드민인포에 뭐 필요한지 보고 그거만 보내도록 수정할듯?지금은 뭐만 보내는지 몰라서
         return adminFacade.getCurrentAdmin();
     }
+
     public void findPassword(String email){
         Admin currentAdmin = adminFacade.getCurrentAdmin();
     Optional<Admin> admin = adminRepository.findByEmail(email);
-
 
     }
 }

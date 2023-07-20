@@ -1,7 +1,6 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
@@ -64,6 +63,7 @@ public class AdminController {
     public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
         adminService.passwordChange(passwordChangeRequest);
     }
+
 /*
     @GetMapping("/mailCheck")
     public String mailCheck(String email){
