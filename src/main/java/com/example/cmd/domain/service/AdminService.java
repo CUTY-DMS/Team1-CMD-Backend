@@ -1,42 +1,45 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.UserListResponse;
-import com.example.cmd.domain.entity.Notification;
-import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
-import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
-import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
-import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
-import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
-import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
-import com.example.cmd.domain.service.exception.user.UserNotFoundException;
+import com.example.cmd.domain.repository.VerificationCodeRepository;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
+import com.example.cmd.domain.service.facade.UserFacade;
+import com.example.cmd.global.security.Token;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.message.SimpleMessage;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
 import java.util.*;
 
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminService {
-
+    private final VerificationCodeRepository verificationCodeRepository;
+    private final JavaMailSender javaMailSender;
     private final NotificationRepository notificationRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-    //private JavaMail javaMailService;
+
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -79,6 +82,8 @@ public class AdminService {
             throw NotificationNotFoundException.EXCEPTION;
         }
     }
+    // 인증번호 8자리 무작위 생성
+
 
     @Transactional
     public void fix(NotificationFixRequest notificationFixRequest) {
@@ -171,7 +176,8 @@ public class AdminService {
         return currentAdmin;
 
     }
-@Transactional
+
+    @Transactional
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -192,9 +198,35 @@ public class AdminService {
         return adminFacade.getCurrentAdmin();
     }
 
-    public void findPassword(String email){
+    public void sendVerificationCode() {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-    Optional<Admin> admin = adminRepository.findByEmail(email);
+        String code = generateVerificationCode();
+        sendEmail(currentAdmin.getEmail(), code);
 
+        verificationCodeRepository.save(
+                VerificationCode.builder()
+                .code(code)
+                .admin(currentAdmin)
+                .build()
+        );
+
+
+
+    }
+
+    private void sendEmail(String toAddress, String verificationCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(toAddress);
+        message.setSubject("인증 코드");
+        message.setText("인증 코드: " + verificationCode);
+
+        // 이메일 전송
+        javaMailSender.send(message);
+    }
+
+    private static String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
     }
 }

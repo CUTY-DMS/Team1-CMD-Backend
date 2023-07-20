@@ -1,5 +1,16 @@
-
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: arong0200@gmail.com
+    password: Arong0308!
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${URL}
