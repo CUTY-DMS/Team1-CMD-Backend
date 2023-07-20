@@ -8,9 +8,10 @@ import lombok.extern.java.Log;
 @NoArgsConstructor
 public class AdminInfoChangeRequest {
 
-private String name;
-private Long teachGrade;
-private Long teachClass;
-private Long birth;
+    private String password;
+    private String name;
+    private Long teachGrade;
+    private Long teachClass;
+    private Long birth;
 
 }

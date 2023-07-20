@@ -25,6 +25,7 @@ public class Admin implements UserDetails {
     @Id
     @Column(name = "admin_email")
     private String email;
+
     @Column(name = "admin_name")
     private String name;
 
@@ -37,8 +38,6 @@ public class Admin implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
 
     private Long teachGrade;
 

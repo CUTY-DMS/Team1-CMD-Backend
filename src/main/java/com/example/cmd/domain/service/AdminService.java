@@ -1,26 +1,27 @@
 package com.example.cmd.domain.service;
 
-
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
+import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
+import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
+import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
+import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.mail.SimpleMailMessage;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -35,7 +36,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-private JavaMail javaMailService;
+    //private JavaMail javaMailService;
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -55,6 +56,8 @@ private JavaMail javaMailService;
                             .title(notificationWriteRequest.getTitle())
                             .contents(notificationWriteRequest.getContents())
                             .admin(admin)
+                            .classes(notificationWriteRequest.getClasses())
+                            .grade(notificationWriteRequest.getGrade())
                             .dateTime(formattedDateTime)
                             .noti(notificationWriteRequest.getNoti())
                             .build()
@@ -73,7 +76,7 @@ private JavaMail javaMailService;
             notificationRepository.deleteById(notification.getId());
 
         } else {
-            throw new NoSuchElementException("사용자 혹은 시간이 맞지 않습니다.");
+            throw NotificationNotFoundException.EXCEPTION;
         }
     }
 
@@ -90,12 +93,10 @@ private JavaMail javaMailService;
                     .dateTime(optionalNotification.get().getDateTime())
                     .build();
 
-            // 저장
             notificationRepository.save(updatedNotification);
             // 저장
 
         }
-
     }
 
     @Transactional
@@ -103,10 +104,10 @@ private JavaMail javaMailService;
         System.out.println("signupRequest = " + adminSignupRequest);
         if (adminRepository.existsByEmail(adminSignupRequest.getEmail())) {
             System.out.println("중복");
-            throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+            throw EmailAlreadyExistException.EXCEPTION;
         }
         if (!Objects.equals(adminSignupRequest.getCode(), "abcd1234")) {
-            throw new IllegalArgumentException("잘못된 코드입니다.");
+            throw CodeMismatchException.EXCEPTION;
         }
         System.out.println("signupRequest.getUsername() = " + adminSignupRequest.getName());
         adminRepository.save(
@@ -124,16 +125,16 @@ private JavaMail javaMailService;
     }
 
     @Transactional
-    public Token adminLogin(LoginRequest loginRequest) {
+    public TokenResponse adminLogin(LoginRequest loginRequest) {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(admin.get().getEmail(), admin.get().getRole());
+            TokenResponse token = jwtTokenProvider.createAccessToken(admin.get().getEmail(), admin.get().getRole());
             System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
         } else {
-            throw new UsernameNotFoundException("로그인에 실패하였습니다.");
+            throw AdminNotFoundException.EXCEPTION;
         }
     }
 
@@ -142,33 +143,43 @@ private JavaMail javaMailService;
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<User> getStudentList(StudentListRequest studentListRequest) {
+    public List<UserListResponse> getStudentList(StudentListRequest studentListRequest) {
         Long grade = studentListRequest.getGradeClass() / 10;
         Long classes = studentListRequest.getGradeClass() % 10;
-        List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
+        List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
         if (users.isEmpty()) {
-            throw new IllegalArgumentException("No users found for the given grade and classes");
+            throw UserNotFoundException.EXCEPTION;
         }
 
         return users;
     }
 
+
     @Transactional
     public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-        currentAdmin.modifyAdminInfo(adminInfoChangeRequest.getName(), adminInfoChangeRequest.getBirth(),
-                adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
+
+        if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+
+        currentAdmin.modifyAdminInfo(
+                adminInfoChangeRequest.getName(),
+                adminInfoChangeRequest.getBirth(),
+                adminInfoChangeRequest.getTeachClass(),
+                adminInfoChangeRequest.getTeachGrade());
         return currentAdmin;
+
     }
 @Transactional
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
         if (isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
-            throw new IllegalArgumentException("not equal password and oldpassword");
+            throw PasswordMismatch.EXCEPTION;
         }
         if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
-            throw new IllegalArgumentException("not equal password and repassword");
+            throw PasswordMismatch.EXCEPTION;
         }
         adminRepository.save(
                 Admin.builder()
@@ -180,10 +191,10 @@ private JavaMail javaMailService;
     public Admin adminInfo() {//나중에 어드민인포에 뭐 필요한지 보고 그거만 보내도록 수정할듯?지금은 뭐만 보내는지 몰라서
         return adminFacade.getCurrentAdmin();
     }
+
     public void findPassword(String email){
         Admin currentAdmin = adminFacade.getCurrentAdmin();
     Optional<Admin> admin = adminRepository.findByEmail(email);
-
 
     }
 }

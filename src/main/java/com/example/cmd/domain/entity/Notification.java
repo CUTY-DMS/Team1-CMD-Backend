@@ -23,6 +23,8 @@ public class Notification {
     private String title;
     private String contents;
     private String dateTime;
+    private Long classes;
+    private Long grade;
 
     @ManyToOne
     @JsonIgnore

@@ -1,16 +1,17 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
-import com.example.cmd.global.security.Token;
-import lombok.Getter;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -24,7 +25,7 @@ public class AdminController {
     }
 
     @PostMapping("login")
-    public Token login(@RequestBody LoginRequest loginRequest){
+    public TokenResponse login(@RequestBody LoginRequest loginRequest){
         return adminService.adminLogin(loginRequest);
     }
 
@@ -44,7 +45,7 @@ public class AdminController {
     }
 
     @GetMapping("student/list")
-    public List<User> studentList(@RequestBody StudentListRequest studentListRequest){
+    public List<UserListResponse> studentList(@RequestBody StudentListRequest studentListRequest){
         return adminService.getStudentList(studentListRequest);
     }
 
@@ -63,12 +64,13 @@ public class AdminController {
         adminService.passwordChange(passwordChangeRequest);
     }
 
+/*
     @GetMapping("/mailCheck")
     public String mailCheck(String email){
         System.out.println("이메일 인즈 요청");
         System.out.println("이메일 인증 이매일:"+email);
         adminService.
-    }
+    }*/
 
 }
 

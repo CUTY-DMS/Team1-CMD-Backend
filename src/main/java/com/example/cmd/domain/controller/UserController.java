@@ -6,7 +6,7 @@ import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("login")
-    public Token login(@RequestBody LoginRequest loginRequest) {
+    public TokenResponse login(@RequestBody LoginRequest loginRequest) {
         return userService.userLogin(loginRequest);
     }
 
@@ -34,7 +34,7 @@ public class UserController {
         return userService.myPage();
     }
 
-    @PatchMapping("modifyUserInfo")
+    @PatchMapping("infoChange")
     public void modifyUserInfo(@RequestBody UserInfoRequest userInfoRequest) {
         userService.modifyUserInfo(userInfoRequest);
     }
@@ -43,5 +43,9 @@ public class UserController {
     public List<NotificationResponse> findNotification() {
         return userService.findNotification();
     }
-    
+
+    @GetMapping("/classNoti")
+    public List<NotificationResponse> findClassNotification() {
+        return userService.findClassNotification();
+    }
 }

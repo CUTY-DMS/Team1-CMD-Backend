@@ -5,6 +5,7 @@ import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,6 @@ private final UserRepository userRepository;
 
     public Notification getNotification(NotificationFindRequest notificationFindRequest) {
         return notificationRepository.findById(notificationFindRequest.getId())
-                .orElseThrow(() -> new IllegalArgumentException("no find  id"));
+                .orElseThrow(() -> NotificationNotFoundException.EXCEPTION);
     }
 }
