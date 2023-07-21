@@ -82,10 +82,10 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void modifyUserInfo(String name, Long birth, Long grade, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
+    public void modifyUserInfo(String name, Long birth, Long classId, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;
-        this.grade = grade;
+        this.classId = classId;
         this.majorField = majorField;
         this.clubName = clubName;
     }
