@@ -16,13 +16,16 @@ spring:
         show_sql: true
     defer-datasource-initialization: true
 
+  redis:
+    port: 6379
+    host: 127.0.0.1
+
 jwt:
   header: ${HEADER:Authorization}
   prefix : ${PREFIX:Bearer }
   secret-key: ${JWT_SECRET_KEY:happilyeverafterhappilyesdfghgdfsdsadfgfdsfgasdfjaskdfhasjkdfhasjkdfaskverafter}
-  access-exp: ${JWT_ACCESS_EXP:7200}
   refresh-exp: ${JWT_REFRESH_EXP:123456789}
-  access-expiration: 360000
+  access-exp: 360000
 
 logging:
   level:

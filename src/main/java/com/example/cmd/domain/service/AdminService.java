@@ -129,7 +129,7 @@ public class AdminService {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            TokenResponse token = jwtTokenProvider.createAccessToken(admin.get().getEmail(), admin.get().getRole());
+            TokenResponse token = jwtTokenProvider.createToken(admin.get().getEmail());
             System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
