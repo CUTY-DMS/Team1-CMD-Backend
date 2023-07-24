@@ -33,7 +33,7 @@ public class CommonService {
 
     @Transactional
     public TokenResponse reissue(String refreshToken) {
-
+        System.out.println("pelassssse");
         return jwtTokenProvider.reissue(refreshToken);
     }
 

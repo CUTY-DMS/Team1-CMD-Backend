@@ -1,9 +1,9 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +47,11 @@ public class AdminController {
     @GetMapping("student/list")
     public List<UserListResponse> studentList(@RequestBody StudentListRequest studentListRequest){
         return adminService.getStudentList(studentListRequest);
+    }
+
+    @GetMapping("student/{userEmail}")
+    public UserInfoResponse student(@PathVariable String userEmail){
+        return adminService.student(userEmail);
     }
 
     @PatchMapping("infoChange")

@@ -1,10 +1,12 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
@@ -154,6 +156,14 @@ public class AdminService {
         return users;
     }
 
+    public UserInfoResponse student(String userEmail){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+       User user =   userRepository.findByEmail(userEmail)
+                .orElseThrow(()->UserNotFoundException.EXCEPTION);
+
+        return new UserInfoResponse(user);
+    }
 
     @Transactional
     public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {

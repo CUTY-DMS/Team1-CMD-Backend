@@ -70,7 +70,6 @@ public class UserService {
     @Transactional
     public TokenResponse userLogin(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
-        System.out.println("pleaseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
             TokenResponse token = jwtTokenProvider.createToken(user.get().getEmail());
