@@ -39,7 +39,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-    //private JavaMail javaMailService;
+
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -147,6 +147,8 @@ public class AdminService {
     }
 
     public List<UserListResponse> getStudentList() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
 
         return userRepository.findAll()
                 .stream()

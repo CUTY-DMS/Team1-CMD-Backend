@@ -14,11 +14,13 @@ public class UserListResponse {
     private Long grade;
     private Long classes;
     private Long number;
+    private String email;
 
     public UserListResponse(User user) {
         name = user.getName();
         grade = user.getGrade();
         classes = user.getClasses();
         number = user.getNumber();
+        email = user.getEmail();
     }
 }
