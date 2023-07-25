@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +39,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-    //private JavaMail javaMailService;
+
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -145,15 +146,15 @@ public class AdminService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<UserListResponse> getStudentList(StudentListRequest studentListRequest) {
-        Long grade = studentListRequest.getGradeClass() / 10;
-        Long classes = studentListRequest.getGradeClass() % 10;
-        List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
-        if (users.isEmpty()) {
-            throw UserNotFoundException.EXCEPTION;
-        }
+    public List<UserListResponse> getStudentList() {
 
-        return users;
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return userRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(User::getClassId)) // 학번에 따라 정렬
+                .map(UserListResponse::new)
+                .collect(Collectors.toList());
     }
 
     public UserInfoResponse student(String userEmail){

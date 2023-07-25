@@ -45,8 +45,8 @@ public class AdminController {
     }
 
     @GetMapping("student/list")
-    public List<UserListResponse> studentList(@RequestBody StudentListRequest studentListRequest){
-        return adminService.getStudentList(studentListRequest);
+    public List<UserListResponse> studentList(){
+        return adminService.getStudentList();
     }
 
     @GetMapping("student/{userEmail}")
