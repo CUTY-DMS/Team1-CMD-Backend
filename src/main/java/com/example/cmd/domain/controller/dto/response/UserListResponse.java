@@ -22,4 +22,3 @@ public class UserListResponse {
         number = user.getNumber();
     }
 }
-//리스트 정렬하기, 학번을 학년 반 번호로 쪼개서 주기, request gradeClass를 빼기

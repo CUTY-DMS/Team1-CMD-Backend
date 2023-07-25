@@ -150,6 +150,7 @@ public class AdminService {
 
         return userRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(User::getClassId)) // 학번에 따라 정렬
                 .map(UserListResponse::new)
                 .collect(Collectors.toList());
     }
