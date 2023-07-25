@@ -50,8 +50,8 @@ public class AdminController {
     }
 
     @PatchMapping("infoChange")
-    public Admin infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
-        return adminService.adminInfoChange(adminInfoChangeRequest);
+    public void infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
+        adminService.adminInfoChange(adminInfoChangeRequest);
     }
 
     @GetMapping("myPage")

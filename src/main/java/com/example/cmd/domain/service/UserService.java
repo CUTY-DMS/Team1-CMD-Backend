@@ -99,8 +99,8 @@ public class UserService {
 
     @Transactional
     public void modifyUserInfo(UserInfoRequest userInfoRequest) {
-
         User currentUser = userFacade.getCurrentUser();
+
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
             throw UserNotFoundException.EXCEPTION;

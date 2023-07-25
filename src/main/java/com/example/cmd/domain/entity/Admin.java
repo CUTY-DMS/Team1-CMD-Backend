@@ -55,12 +55,14 @@ public class Admin implements UserDetails {
     public String getPassword() {
         return password;
     }
+
     public void modifyAdminInfo(String name, Long birth, Long teachClass, Long teachGrade) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;
         this.teachClass = teachClass;
         this.teachGrade = teachGrade;
     }
+
     @Override
     public String getUsername() {
         return email;

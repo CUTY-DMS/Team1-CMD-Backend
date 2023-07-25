@@ -5,6 +5,7 @@ import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
@@ -156,20 +157,28 @@ public class AdminService {
 
 
     @Transactional
-    public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
+    public void adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-
+/*
         if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
             throw PasswordMismatch.EXCEPTION;
+        }*/
+
+        Optional<Admin> adminList = adminRepository.findByEmail(currentAdmin.getEmail());
+        if (adminList.isEmpty()) {
+            throw AdminNotFoundException.EXCEPTION;
         }
 
-        currentAdmin.modifyAdminInfo(
-                adminInfoChangeRequest.getName(),
-                adminInfoChangeRequest.getBirth(),
-                adminInfoChangeRequest.getTeachClass(),
-                adminInfoChangeRequest.getTeachGrade());
-        return currentAdmin;
+        Admin admin = adminList.get();
 
+        String name = adminInfoChangeRequest.getName();
+        Long birth = adminInfoChangeRequest.getBirth();
+        Long teachClass = adminInfoChangeRequest.getTeachClass();
+        Long teachGrade = adminInfoChangeRequest.getTeachGrade();
+
+
+        admin.modifyAdminInfo(name, birth, teachClass, teachGrade);
+        adminRepository.save(admin);
     }
 @Transactional
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
