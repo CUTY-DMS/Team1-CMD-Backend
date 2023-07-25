@@ -11,10 +11,15 @@ import lombok.Getter;
 public class UserListResponse {
 
     private String name;
-    private Long classId;
+    private Long grade;
+    private Long classes;
+    private Long number;
 
     public UserListResponse(User user) {
         name = user.getName();
-        classId = user.getClassId();
+        grade = user.getGrade();
+        classes = user.getClasses();
+        number = user.getNumber();
     }
 }
+//리스트 정렬하기, 학번을 학년 반 번호로 쪼개서 주기, request gradeClass를 빼기

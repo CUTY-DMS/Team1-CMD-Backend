@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -145,15 +146,12 @@ public class AdminService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<UserListResponse> getStudentList(StudentListRequest studentListRequest) {
-        Long grade = studentListRequest.getGradeClass() / 10;
-        Long classes = studentListRequest.getGradeClass() % 10;
-        List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
-        if (users.isEmpty()) {
-            throw UserNotFoundException.EXCEPTION;
-        }
+    public List<UserListResponse> getStudentList() {
 
-        return users;
+        return userRepository.findAll()
+                .stream()
+                .map(UserListResponse::new)
+                .collect(Collectors.toList());
     }
 
     public UserInfoResponse student(String userEmail){
