@@ -1,6 +1,7 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
@@ -130,7 +131,7 @@ public class AdminService {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            TokenResponse token = jwtTokenProvider.createAccessToken(admin.get().getEmail(), admin.get().getRole());
+            TokenResponse token = jwtTokenProvider.createToken(admin.get().getEmail());
             System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
@@ -155,6 +156,14 @@ public class AdminService {
         return users;
     }
 
+    public UserInfoResponse student(String userEmail){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+       User user =   userRepository.findByEmail(userEmail)
+                .orElseThrow(()->UserNotFoundException.EXCEPTION);
+
+        return new UserInfoResponse(user);
+    }
 
     @Transactional
     public void adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {

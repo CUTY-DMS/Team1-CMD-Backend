@@ -1,12 +1,12 @@
 package com.example.cmd.global.security.jwt;
 
 
-import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.RefreshToken;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.example.cmd.domain.repository.RefreshTokenRepository;
+import com.example.cmd.domain.service.exception.TokenExpiredException;
+import com.example.cmd.domain.service.exception.TokenInvalidException;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,8 +27,10 @@ public class JwtTokenProvider {
     private String accessSecretKey = "cmdproject";
 
     // 토큰 유효시간 30분
-    private long accessTokenValidTime = 30 * 60 * 1000L;
+    private long accessTokenValidTime = 1 * 60 * 1000L;
 
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final JwtProperties jwtProperties;
     private final UserDetailsService userDetailsService;
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
@@ -39,11 +41,11 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
 
-    public TokenResponse createAccessToken(String email, Role roles) {
+    public String createAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
-        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+        //claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
-     String accessToken =Jwts.builder()
+        return Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + accessTokenValidTime)) // set Expire Time
@@ -51,18 +53,87 @@ public class JwtTokenProvider {
                 // signature 에 들어갈 secret값 세팅
                 .compact();
 
-        //Re
 
-        return TokenResponse.builder().
+        /*return TokenResponse.builder().
                 accessToken(accessToken)
                 .key(email)
+                .build();*/
+    }
+
+    public TokenResponse createToken(String email){
+        return TokenResponse
+                .builder()
+                .accessToken(createAccessToken(email))
+                .key(email)
+                .refreshToken(createRefreshToken(email))
                 .build();
+    }
+
+    private String createRefreshToken(String email) {
+
+        Date now = new Date();
+
+        String refreshToken = Jwts.builder()
+                .setSubject(email)
+                .claim("type", "refresh")
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + jwtProperties.getRefreshExp() * 1000))
+                .signWith(SignatureAlgorithm.HS512, accessSecretKey)
+                .compact();
+
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .email(email)
+                        .refreshToken(refreshToken)
+                        .expiration(jwtProperties.getRefreshExp())
+                        .build());
+
+        return refreshToken;
     }
 
     // JWT 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public TokenResponse reissue(String refreshToken) {
+
+        if(!isRefreshToken(refreshToken))
+            throw TokenInvalidException.EXCEPTION;
+
+        String email = getId(refreshToken);
+
+        refreshTokenRepository.findById(email)
+                .filter(token -> token.getRefreshToken().equals(refreshToken))
+                .map(token -> token.updateExpiration(jwtProperties.getRefreshExp()))
+                .orElseThrow(() -> TokenInvalidException.EXCEPTION);
+
+        return TokenResponse.builder()//access토큰은 다시 만들어서 반환하고 리프레쉬는 안만든다
+                .accessToken(createAccessToken(email))
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    private boolean isRefreshToken(String token) {
+        return getClaims(token).get("type").equals("refresh");
+    }
+    private String getId(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    private Claims getClaims(String token) {
+        try {
+            return Jwts
+                    .parser()
+                    .setSigningKey(accessSecretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw TokenExpiredException.EXCEPTION;
+        } catch (Exception e) {
+            throw TokenInvalidException.EXCEPTION;
+        }
     }
 
     // 토큰에서 회원 정보 추출
