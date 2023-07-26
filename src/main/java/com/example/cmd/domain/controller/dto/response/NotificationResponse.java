@@ -12,9 +12,12 @@ public class NotificationResponse {
 
     private String dateTime;
 
+    private String name;
+
     public NotificationResponse(Notification notification) {
         title = notification.getTitle();
         dateTime = notification.getDateTime();
+        name = notification.getAdmin().getName();
 
     }
 }

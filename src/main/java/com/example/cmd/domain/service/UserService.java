@@ -123,7 +123,7 @@ public class UserService {
 
         return notificationRepository.findAll()
                 .stream()
-                .map(NotificationResponse::new)
+                .map(notification -> new NotificationResponse(notification))
                 .collect(Collectors.toList());
 
     }
