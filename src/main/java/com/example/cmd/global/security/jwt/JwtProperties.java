@@ -15,8 +15,11 @@ public class JwtProperties {
 
     private final String secretKey;
     private final Long accessExp;
-    private final Long refreshExp;
+    private final Long refreshExp=3600L;
     private final String header;
     private final String prefix;
 
+    public Long getRefreshExp() {
+        return refreshExp;
+    }
 }

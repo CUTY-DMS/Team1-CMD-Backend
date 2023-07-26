@@ -1,9 +1,9 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.service.AdminService;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,13 +45,18 @@ public class AdminController {
     }
 
     @GetMapping("student/list")
-    public List<UserListResponse> studentList(@RequestBody StudentListRequest studentListRequest){
-        return adminService.getStudentList(studentListRequest);
+    public List<UserListResponse> studentList(){
+        return adminService.getStudentList();
+    }
+
+    @GetMapping("student/{userEmail}")
+    public UserInfoResponse student(@PathVariable String userEmail){
+        return adminService.student(userEmail);
     }
 
     @PatchMapping("infoChange")
-    public Admin infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
-        return adminService.adminInfoChange(adminInfoChangeRequest);
+    public void infoChange(@RequestBody AdminInfoChangeRequest adminInfoChangeRequest){
+        adminService.adminInfoChange(adminInfoChangeRequest);
     }
 
     @GetMapping("myPage")

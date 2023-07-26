@@ -72,7 +72,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
-            TokenResponse token = jwtTokenProvider.createAccessToken(user.get().getEmail(), user.get().getRole());
+            TokenResponse token = jwtTokenProvider.createToken(user.get().getEmail());
             System.out.println("login success");
             return token;
         } else {
@@ -99,15 +99,14 @@ public class UserService {
 
     @Transactional
     public void modifyUserInfo(UserInfoRequest userInfoRequest) {
-
         User currentUser = userFacade.getCurrentUser();
+
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
             throw UserNotFoundException.EXCEPTION;
         }
 
         User user = userList.get();
-
         String name = userInfoRequest.getName();
         Long birth = userInfoRequest.getBirth();
         Long classId = userInfoRequest.getClassId();
@@ -124,7 +123,7 @@ public class UserService {
 
         return notificationRepository.findAll()
                 .stream()
-                .map(NotificationResponse::new)
+                .map(notification -> new NotificationResponse(notification))
                 .collect(Collectors.toList());
 
     }

@@ -1,10 +1,12 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Notification;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.Role;
+import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +39,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
-    //private JavaMail javaMailService;
+
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -129,7 +132,7 @@ public class AdminService {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            TokenResponse token = jwtTokenProvider.createAccessToken(admin.get().getEmail(), admin.get().getRole());
+            TokenResponse token = jwtTokenProvider.createToken(admin.get().getEmail());
             System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
@@ -143,33 +146,49 @@ public class AdminService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<UserListResponse> getStudentList(StudentListRequest studentListRequest) {
-        Long grade = studentListRequest.getGradeClass() / 10;
-        Long classes = studentListRequest.getGradeClass() % 10;
-        List<UserListResponse> users = userRepository.findAllByGradeAndClasses(grade, classes);
-        if (users.isEmpty()) {
-            throw UserNotFoundException.EXCEPTION;
-        }
+    public List<UserListResponse> getStudentList() {
 
-        return users;
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return userRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(User::getClassId)) // 학번에 따라 정렬
+                .map(UserListResponse::new)
+                .collect(Collectors.toList());
     }
 
+    public UserInfoResponse student(String userEmail){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+       User user =   userRepository.findByEmail(userEmail)
+                .orElseThrow(()->UserNotFoundException.EXCEPTION);
+
+        return new UserInfoResponse(user);
+    }
 
     @Transactional
-    public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
+    public void adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
         if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
             throw PasswordMismatch.EXCEPTION;
         }
 
-        currentAdmin.modifyAdminInfo(
-                adminInfoChangeRequest.getName(),
-                adminInfoChangeRequest.getBirth(),
-                adminInfoChangeRequest.getTeachClass(),
-                adminInfoChangeRequest.getTeachGrade());
-        return currentAdmin;
+        Optional<Admin> adminList = adminRepository.findByEmail(currentAdmin.getEmail());
+        if (adminList.isEmpty()) {
+            throw AdminNotFoundException.EXCEPTION;
+        }
 
+        Admin admin = adminList.get();
+
+        String name = adminInfoChangeRequest.getName();
+        Long birth = adminInfoChangeRequest.getBirth();
+        Long teachClass = adminInfoChangeRequest.getTeachClass();
+        Long teachGrade = adminInfoChangeRequest.getTeachGrade();
+
+
+        admin.modifyAdminInfo(name, birth, teachClass, teachGrade);
+        adminRepository.save(admin);
     }
 @Transactional
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {

@@ -11,10 +11,16 @@ import lombok.Getter;
 public class UserListResponse {
 
     private String name;
-    private Long classId;
+    private Long grade;
+    private Long classes;
+    private Long number;
+    private String email;
 
     public UserListResponse(User user) {
         name = user.getName();
-        classId = user.getClassId();
+        grade = user.getGrade();
+        classes = user.getClasses();
+        number = user.getNumber();
+        email = user.getEmail();
     }
 }
