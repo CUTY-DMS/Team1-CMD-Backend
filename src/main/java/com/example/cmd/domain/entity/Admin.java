@@ -56,6 +56,10 @@ public class Admin implements UserDetails {
         return password;
     }
 
+    public void passwordChange(String password) {
+        this.password = password;
+    }
+
     public void modifyAdminInfo(String name, Long birth, Long teachClass, Long teachGrade) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;

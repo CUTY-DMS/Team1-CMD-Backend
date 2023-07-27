@@ -3,10 +3,7 @@ package com.example.cmd.domain.service;
 import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
-import com.example.cmd.domain.entity.Notification;
-import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
@@ -39,6 +36,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
+    private final PasswordConverter passwordConverter;
 
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
@@ -130,10 +128,10 @@ public class AdminService {
     @Transactional
     public TokenResponse adminLogin(LoginRequest loginRequest) {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
+        System.out.println("found Email");
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
             TokenResponse token = jwtTokenProvider.createToken(admin.get().getEmail());
-            System.out.println("user.get().getEmail() = " + admin.get().getEmail());
             System.out.println("login success");
             return token;
         } else {
@@ -194,17 +192,15 @@ public class AdminService {
     public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-        if (isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
+        if (!isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
             throw PasswordMismatch.EXCEPTION;
         }
         if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
             throw PasswordMismatch.EXCEPTION;
         }
-        adminRepository.save(
-                Admin.builder()
-                        .password(passwordChangeRequest.getNewPassword())
-                        .build()
-        );
+
+    currentAdmin.passwordChange(passwordConverter.encode(passwordChangeRequest.getNewPassword()));
+
     }
 
     public Admin adminInfo() {//나중에 어드민인포에 뭐 필요한지 보고 그거만 보내도록 수정할듯?지금은 뭐만 보내는지 몰라서
