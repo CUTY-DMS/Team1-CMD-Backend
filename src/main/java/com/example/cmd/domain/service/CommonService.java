@@ -4,10 +4,13 @@ import com.example.cmd.domain.controller.dto.request.NotificationFindRequest;
 import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.domain.entity.Notification;
+import com.example.cmd.domain.entity.RefreshToken;
 import com.example.cmd.domain.repository.NotificationRepository;
+import com.example.cmd.domain.repository.RefreshTokenRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
 import com.example.cmd.global.security.auth.AuthDetailsService;
+import com.example.cmd.global.security.exception.InvalidTokenException;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class CommonService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     public Notification getNotification(NotificationFindRequest notificationFindRequest) {
@@ -33,7 +37,6 @@ public class CommonService {
 
     @Transactional
     public TokenResponse reissue(String refreshToken) {
-        System.out.println("pelassssse");
         return jwtTokenProvider.reissue(refreshToken);
     }
 
