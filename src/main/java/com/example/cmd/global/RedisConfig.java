@@ -9,7 +9,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
-//@RequiredArgsConstructor//이게 왜 쓰이는거지
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
