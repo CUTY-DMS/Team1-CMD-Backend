@@ -1,23 +1,16 @@
 package com.example.cmd.domain.service;
 
-import com.example.cmd.domain.controller.dto.request.NotificationFindRequest;
-import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
+import com.example.cmd.domain.controller.dto.response.NotificationResponse;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.domain.entity.Notification;
-import com.example.cmd.domain.entity.RefreshToken;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.RefreshTokenRepository;
 import com.example.cmd.domain.repository.UserRepository;
-import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
-import com.example.cmd.global.security.auth.AuthDetailsService;
-import com.example.cmd.global.security.exception.InvalidTokenException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +23,14 @@ public class CommonService {
     private final RefreshTokenRepository refreshTokenRepository;
 
 
-    public Notification getNotification(NotificationFindRequest notificationFindRequest) {
-        return notificationRepository.findById(notificationFindRequest.getId())
-                .orElseThrow(() -> NotificationNotFoundException.EXCEPTION);
+    public NotificationResponse getNotification(Long notiId) {
+
+        Notification notification = notificationRepository.findById(notiId)
+                .orElseThrow(() -> UserNotFoundException.EXCEPTION);
+
+        return new NotificationResponse(notification);
+        //return notificationRepository.findById(notificationFindRequest.getId())
+          //      .orElseThrow(() -> NotificationNotFoundException.EXCEPTION);
     }
 
     @Transactional

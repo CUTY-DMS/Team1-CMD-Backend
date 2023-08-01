@@ -3,7 +3,7 @@ package com.example.cmd.domain.controller;
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
-import com.example.cmd.domain.controller.dto.response.NotificationResponse;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
@@ -40,12 +40,12 @@ public class UserController {
     }
 
     @GetMapping("/allNoti")
-    public List<NotificationResponse> findNotification() {
+    public List<NotificationListResponse> findNotification() {
         return userService.findNotification();
     }
 
     @GetMapping("/classNoti")
-    public List<NotificationResponse> findClassNotification() {
+    public List<NotificationListResponse> findClassNotification() {
         return userService.findClassNotification();
     }
 }

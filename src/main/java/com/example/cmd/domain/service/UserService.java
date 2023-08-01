@@ -3,7 +3,7 @@ package com.example.cmd.domain.service;
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
-import com.example.cmd.domain.controller.dto.response.NotificationResponse;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
@@ -16,7 +16,6 @@ import com.example.cmd.domain.service.facade.UserFacade;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,24 +116,24 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<NotificationResponse> findNotification() {
+    public List<NotificationListResponse> findNotification() {
 
         User currentUser = userFacade.getCurrentUser();
 
         return notificationRepository.findAll()
                 .stream()
-                .map(notification -> new NotificationResponse(notification))
+                .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
 
     }
 
-    public List<NotificationResponse> findClassNotification() {
+    public List<NotificationListResponse> findClassNotification() {
 
         User currentUser = userFacade.getCurrentUser();
 
         return notificationRepository.findByNotiAndClassesAndGrade(CLASS, currentUser.getClasses(), currentUser.getGrade())
                 .stream()
-                .map(NotificationResponse::new)
+                .map(NotificationListResponse::new)
                 .collect(Collectors.toList());
     }
 
