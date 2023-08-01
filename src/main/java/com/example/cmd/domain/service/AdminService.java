@@ -1,22 +1,23 @@
 package com.example.cmd.domain.service;
 
-
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.entity.Notification;
-import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
+import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.response.UserListResponse;
+import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
+import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
+import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
+import com.example.cmd.domain.service.exception.notification.NotificationNotFoundException;
+import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.example.cmd.domain.entity.Noti.CLASS;
+import static com.example.cmd.domain.entity.Noti.TEACHER;
 
 @Service
 @AllArgsConstructor
@@ -35,6 +40,7 @@ public class AdminService {
     private final AdminFacade adminFacade;
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
+    private final PasswordConverter passwordConverter;
 
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
@@ -55,6 +61,8 @@ public class AdminService {
                             .title(notificationWriteRequest.getTitle())
                             .contents(notificationWriteRequest.getContents())
                             .admin(admin)
+                            .classes(notificationWriteRequest.getClasses())
+                            .grade(notificationWriteRequest.getGrade())
                             .dateTime(formattedDateTime)
                             .noti(notificationWriteRequest.getNoti())
                             .build()
@@ -73,7 +81,7 @@ public class AdminService {
             notificationRepository.deleteById(notification.getId());
 
         } else {
-            throw new NoSuchElementException("사용자 혹은 시간이 맞지 않습니다.");
+            throw NotificationNotFoundException.EXCEPTION;
         }
     }
 
@@ -90,12 +98,10 @@ public class AdminService {
                     .dateTime(optionalNotification.get().getDateTime())
                     .build();
 
-            // 저장
             notificationRepository.save(updatedNotification);
             // 저장
 
         }
-
     }
 
     @Transactional
@@ -103,10 +109,10 @@ public class AdminService {
         System.out.println("signupRequest = " + adminSignupRequest);
         if (adminRepository.existsByEmail(adminSignupRequest.getEmail())) {
             System.out.println("중복");
-            throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
+            throw EmailAlreadyExistException.EXCEPTION;
         }
         if (!Objects.equals(adminSignupRequest.getCode(), "abcd1234")) {
-            throw new IllegalArgumentException("잘못된 코드입니다.");
+            throw CodeMismatchException.EXCEPTION;
         }
         System.out.println("signupRequest.getUsername() = " + adminSignupRequest.getName());
         adminRepository.save(
@@ -124,16 +130,16 @@ public class AdminService {
     }
 
     @Transactional
-    public Token adminLogin(LoginRequest loginRequest) {
+    public TokenResponse adminLogin(LoginRequest loginRequest) {
         Optional<Admin> admin = adminRepository.findByEmail(loginRequest.getEmail());
+        System.out.println("found Email");
         if (admin.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), admin.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(admin.get().getEmail(), admin.get().getRole());
-            System.out.println("user.get().getEmail() = " + admin.get().getEmail());
+            TokenResponse token = jwtTokenProvider.createToken(admin.get().getEmail());
             System.out.println("login success");
             return token;
         } else {
-            throw new UsernameNotFoundException("로그인에 실패하였습니다.");
+            throw AdminNotFoundException.EXCEPTION;
         }
     }
 
@@ -142,22 +148,104 @@ public class AdminService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    public List<User> getStudentList(StudentListRequest studentListRequest) {
-        Long grade = studentListRequest.getGradeClass() / 10;
-        Long classes = studentListRequest.getGradeClass() % 10;
-        List<User> users = userRepository.findAllByGradeAndClasses(grade, classes);
-        if (users.isEmpty()) {
-            throw new IllegalArgumentException("No users found for the given grade and classes");
-        }
+    public List<UserListResponse> getStudentList() {
 
-        return users;
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return userRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(User::getClassId)) // 학번에 따라 정렬
+                .map(UserListResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public UserInfoResponse student(String userEmail){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+       User user =   userRepository.findByEmail(userEmail)
+                .orElseThrow(()->UserNotFoundException.EXCEPTION);
+
+        return new UserInfoResponse(user);
     }
 
     @Transactional
-    public Admin adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
+    public void adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
-        currentAdmin.modifyAdminInfo(adminInfoChangeRequest.getName(), adminInfoChangeRequest.getBirth(),
-                adminInfoChangeRequest.getTeachClass(), adminInfoChangeRequest.getTeachGrade());
-        return currentAdmin;
+
+        if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+
+        Optional<Admin> adminList = adminRepository.findByEmail(currentAdmin.getEmail());
+        if (adminList.isEmpty()) {
+            throw AdminNotFoundException.EXCEPTION;
+        }
+
+        Admin admin = adminList.get();
+
+        String name = adminInfoChangeRequest.getName();
+        Long birth = adminInfoChangeRequest.getBirth();
+        Long teachClass = adminInfoChangeRequest.getTeachClass();
+        Long teachGrade = adminInfoChangeRequest.getTeachGrade();
+
+
+        admin.modifyAdminInfo(name, birth, teachClass, teachGrade);
+        adminRepository.save(admin);
     }
+@Transactional
+    public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+        if (!isPasswordMatching(passwordChangeRequest.getOldPassword(), currentAdmin.getPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+        if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+
+    currentAdmin.passwordChange(passwordConverter.encode(passwordChangeRequest.getNewPassword()));
+
+    }
+
+    public Admin adminInfo() {//나중에 어드민인포에 뭐 필요한지 보고 그거만 보내도록 수정할듯?지금은 뭐만 보내는지 몰라서
+        return adminFacade.getCurrentAdmin();
+    }
+
+    public void findPassword(String email){
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+    Optional<Admin> admin = adminRepository.findByEmail(email);
+
+    }
+
+    public List<NotificationListResponse> getNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findAll()
+                .stream()
+                .map(notification -> new NotificationListResponse(notification))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<NotificationListResponse> getClassNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findByNotiAndAdmin_TeachClassAndAdmin_TeachGrade(CLASS, currentAdmin.getTeachClass(), currentAdmin.getTeachGrade())
+                .stream()
+                .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<NotificationListResponse> findAdminNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findByNoti(TEACHER)
+                .stream()
+                .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -13,10 +13,14 @@ public class UserInfoResponse {
     private String name;
     private String email;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     private String password;
 >>>>>>> main
     private Long classIdNumber;
+=======
+    private Long classId;
+>>>>>>> 반공지확인
     private Long birth;
     private String majorField;
     private String clubName;
@@ -25,7 +29,7 @@ public class UserInfoResponse {
     public UserInfoResponse(User user) {
         email = user.getEmail();
         name = user.getName();
-        classIdNumber = user.getNumber();
+        classId = user.getClassId();
         birth = user.getBirth();
         majorField = user.getMajorField();
         clubName = user.getClubName();

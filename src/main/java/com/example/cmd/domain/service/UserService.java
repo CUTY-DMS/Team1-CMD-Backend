@@ -3,28 +3,30 @@ package com.example.cmd.domain.service;
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
-import com.example.cmd.domain.controller.dto.response.NotificationResponse;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.global.security.Token;
+import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 =======
 >>>>>>> main
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.cmd.domain.entity.Noti.CLASS;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +45,7 @@ public class UserService {
         System.out.println("signupRequest = " + signupRequest);
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
             System.out.println("중복");
+<<<<<<< HEAD
             throw new UsernameNotFoundException("이미 존재하는 이메일입니다.");
 =======
         Optional<User> byUser = userRepository.findByEmail(signupRequest.getUsername());
@@ -55,6 +58,9 @@ public class UserService {
                     .build();
             userRepository.save(user);
 >>>>>>> main
+=======
+            throw EmailAlreadyExistException.EXCEPTION;
+>>>>>>> 반공지확인
         }
         System.out.println("signupRequest.getUsername() = " + signupRequest.getName());
         Long grade = signupRequest.getClassId() / 1000;
@@ -69,6 +75,7 @@ public class UserService {
                         .classes(classes)
                         .grade(grade)
                         .number(number)
+                        .classId(signupRequest.getClassId())
                         .clubName(signupRequest.getClubName())
                         .role(Role.ROLE_USER)
                         .build()
@@ -76,16 +83,15 @@ public class UserService {
     }
 
     @Transactional
-    public Token userLogin(LoginRequest loginRequest) {
+    public TokenResponse userLogin(LoginRequest loginRequest) {
         Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isPresent()
                 && isPasswordMatching(loginRequest.getPassword(), user.get().getPassword())) {
-            Token token = jwtTokenProvider.createToken(user.get().getEmail(), user.get().getRole());
-            System.out.println("user.get().getEmail() = " + user.get().getEmail());
+            TokenResponse token = jwtTokenProvider.createToken(user.get().getEmail());
             System.out.println("login success");
             return token;
         } else {
-            throw new UsernameNotFoundException("로그인에 실패하였습니다.");
+            throw UserNotFoundException.EXCEPTION;
         }
     }
 
@@ -95,21 +101,12 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
-    /*    public List<UserInfoResponse> myPage() {
-
-            User currentUser = userFacade.getCurrentUser();
-
-            return userRepository.findByEmail(currentUser.getEmail())
-                    .stream()
-                    .map(UserInfoResponse::new)
-                    .collect(Collectors.toList());
-        }*/
     public UserInfoResponse myPage() {
         User currentUser = userFacade.getCurrentUser();
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
             // 예외 처리 또는 null 등의 처리를 수행해야 합니다.
-            return null; // 또는 원하는 방식으로 예외 처리
+            throw UserNotFoundException.EXCEPTION; // 또는 원하는 방식으로 예외 처리
         }
         User user = userList.get(); // 첫 번째 결과를 사용하거나, 적절한 방식으로 결과를 선택하세요.
         return new UserInfoResponse(user);
@@ -117,39 +114,53 @@ public class UserService {
 
     @Transactional
     public void modifyUserInfo(UserInfoRequest userInfoRequest) {
-
         User currentUser = userFacade.getCurrentUser();
+
         Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
         if (userList.isEmpty()) {
-            throw new RuntimeException("Email Not Found");
+            throw UserNotFoundException.EXCEPTION;
         }
 
         User user = userList.get();
-
-
         String name = userInfoRequest.getName();
         Long birth = userInfoRequest.getBirth();
-        Long classIdNumber = userInfoRequest.getClassIdNumber();
+        Long classId = userInfoRequest.getClassId();
         String majorField = userInfoRequest.getMajorField();
         String clubName = userInfoRequest.getClubName();
 
-        user.modifyUserInfo(name, birth, classIdNumber, majorField, clubName);
+        user.modifyUserInfo(name, birth, classId, majorField, clubName);
         userRepository.save(user);
     }
 
-    public List<NotificationResponse> findNotification() {
+    public List<NotificationListResponse> findNotification() {
+
+        User currentUser = userFacade.getCurrentUser();
 
         return notificationRepository.findAll()
                 .stream()
-                .map(NotificationResponse::new)
+                .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
 
     }
 
+<<<<<<< HEAD
 =======
     public UserInfoResponse myPage() {
         User currentUser = userFacade.currentUser();
         return new UserInfoResponse(currentUser);
     }
 >>>>>>> main
+=======
+    public List<NotificationListResponse> findClassNotification() {
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, currentUser.getClasses(), currentUser.getGrade())
+                .stream()
+                .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
+>>>>>>> 반공지확인
 }
+

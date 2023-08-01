@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class UserInfoRequest {
 
     private String name;
-    private Long classIdNumber;
+    private Long classId;
     private Long birth;
     private String majorField;
     private String clubName;

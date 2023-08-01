@@ -25,6 +25,7 @@ public class Admin implements UserDetails {
     @Id
     @Column(name = "admin_email")
     private String email;
+
     @Column(name = "admin_name")
     private String name;
 
@@ -37,8 +38,6 @@ public class Admin implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-
 
     private Long teachGrade;
 
@@ -56,12 +55,18 @@ public class Admin implements UserDetails {
     public String getPassword() {
         return password;
     }
+
+    public void passwordChange(String password) {
+        this.password = password;
+    }
+
     public void modifyAdminInfo(String name, Long birth, Long teachClass, Long teachGrade) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;
         this.teachClass = teachClass;
         this.teachGrade = teachGrade;
     }
+
     @Override
     public String getUsername() {
         return email;

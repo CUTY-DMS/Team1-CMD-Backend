@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NotificationResponse {
+public class NotificationListResponse {
 
     private Long id;
 
@@ -14,14 +14,11 @@ public class NotificationResponse {
 
     private String dateTime;
 
-    private String contents;
-
     private String name;
 
-    public NotificationResponse(Notification notification) {
+    public NotificationListResponse(Notification notification) {
         id = notification.getId();
         title = notification.getTitle();
-        contents = notification.getContents();
         dateTime = notification.getDateTime();
         name = notification.getAdmin().getName();
 
