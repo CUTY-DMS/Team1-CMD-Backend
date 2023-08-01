@@ -1,6 +1,7 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.*;
@@ -25,6 +26,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.example.cmd.domain.entity.Noti.CLASS;
+import static com.example.cmd.domain.entity.Noti.TEACHER;
 
 @Service
 @AllArgsConstructor
@@ -212,4 +216,15 @@ public class AdminService {
     Optional<Admin> admin = adminRepository.findByEmail(email);
 
     }
+
+    public List<NotificationListResponse> findAdminNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findByNoti(TEACHER)
+                .stream()
+                .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.controller.dto.response.UserListResponse;
 import com.example.cmd.domain.entity.Admin;
@@ -77,6 +78,10 @@ public class AdminController {
         adminService.
     }*/
 
+    @GetMapping("/teacherNoti")
+    public List<NotificationListResponse> findAdminNotification() {
+        return adminService.findAdminNotification();
+    }
 }
 
 

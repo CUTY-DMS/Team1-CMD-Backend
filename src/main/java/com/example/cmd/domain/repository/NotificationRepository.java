@@ -15,4 +15,6 @@ public interface NotificationRepository extends JpaRepository<Notification,Long>
 Optional<Notification> findByAdminAndDateTime(Admin admin, String dateTime);
 Boolean existsByDateTime(String dateTime);
     List<Notification> findByNotiAndClassesAndGrade(Noti ClASS, Long classes, Long grade);
+    List<Notification> findByNoti(Noti TEACHER);
+
 }
