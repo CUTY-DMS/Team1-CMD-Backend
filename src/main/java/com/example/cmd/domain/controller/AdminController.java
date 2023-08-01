@@ -78,6 +78,16 @@ public class AdminController {
         adminService.
     }*/
 
+    @GetMapping("/allNoti")
+    public List<NotificationListResponse> findNotification() {
+        return adminService.getNotification();
+    }
+
+    @GetMapping("/classNoti")
+    public List<NotificationListResponse> findClassNotification() {
+        return adminService.getClassNotification();
+    }
+
     @GetMapping("/teacherNoti")
     public List<NotificationListResponse> findAdminNotification() {
         return adminService.findAdminNotification();

@@ -17,4 +17,6 @@ Boolean existsByDateTime(String dateTime);
     List<Notification> findByNotiAndClassesAndGrade(Noti ClASS, Long classes, Long grade);
     List<Notification> findByNoti(Noti TEACHER);
 
+    List<Notification> findByNotiAndAdmin_TeachClassAndAdmin_TeachGrade(Noti CLASS,Long teachClass, Long teachGrade);
+
 }

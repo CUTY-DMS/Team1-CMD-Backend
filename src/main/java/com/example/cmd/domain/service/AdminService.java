@@ -217,6 +217,27 @@ public class AdminService {
 
     }
 
+    public List<NotificationListResponse> getNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findAll()
+                .stream()
+                .map(notification -> new NotificationListResponse(notification))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<NotificationListResponse> getClassNotification() {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return notificationRepository.findByNotiAndAdmin_TeachClassAndAdmin_TeachGrade(CLASS, currentAdmin.getTeachClass(), currentAdmin.getTeachGrade())
+                .stream()
+                .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
     public List<NotificationListResponse> findAdminNotification() {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
