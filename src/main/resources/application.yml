@@ -7,12 +7,12 @@ spring:
     password: ${PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # ??
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true66
         show_sql: true
     defer-datasource-initialization: true
 
