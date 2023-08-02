@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class User implements UserDetails {
 
-@Id
+    @Id
     @Column(name = "user_email")
     private String email;
 
