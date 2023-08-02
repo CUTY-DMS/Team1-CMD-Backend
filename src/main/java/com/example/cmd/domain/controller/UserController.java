@@ -1,6 +1,7 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
+import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
@@ -47,5 +48,10 @@ public class UserController {
     @GetMapping("/classNoti")
     public List<NotificationListResponse> findClassNotification() {
         return userService.findClassNotification();
+    }
+
+    @PatchMapping("password/change")
+    public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
+        userService.passwordChange(passwordChangeRequest);
     }
 }

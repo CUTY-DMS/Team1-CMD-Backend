@@ -1,15 +1,18 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.LoginRequest;
+import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
 import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
 import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
 import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.entity.PasswordConverter;
 import com.example.cmd.domain.entity.Role;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
 import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -47,7 +51,7 @@ public class UserService {
         }
         System.out.println("signupRequest.getUsername() = " + signupRequest.getName());
         Long grade = signupRequest.getClassId() / 1000;
-        Long classes = (signupRequest.getClassId() / 100)%10;
+        Long classes = (signupRequest.getClassId() / 100) % 10;
         Long number = signupRequest.getClassId() % 100;
         userRepository.save(
                 User.builder()
@@ -137,5 +141,16 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void passwordChange(PasswordChangeRequest passwordChangeRequest) {
+
+        User currentUser = userFacade.getCurrentUser();
+        if (!isPasswordMatching(passwordChangeRequest.getOldPassword(), currentUser.getPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+        if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
+            throw PasswordMismatch.EXCEPTION;
+        }
+    }
 }
 
