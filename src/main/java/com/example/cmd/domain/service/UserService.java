@@ -151,6 +151,8 @@ public class UserService {
         if (!Objects.equals(passwordChangeRequest.getNewPassword(), passwordChangeRequest.getReNewPassword())) {
             throw PasswordMismatch.EXCEPTION;
         }
+        currentUser.passwordChange(passwordConverter.encode(passwordChangeRequest.getNewPassword()));
+
     }
 }
 

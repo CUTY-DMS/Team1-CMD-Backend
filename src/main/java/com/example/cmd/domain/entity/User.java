@@ -82,6 +82,10 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void passwordChange(String password) {
+        this.password = password;
+    }
+
     public void modifyUserInfo(String name, Long birth, Long classId, String majorField, String clubName) { //title과 content 값을 바꿔주려고 이 메소드를 사용함?
         this.name = name;
         this.birth = birth;
