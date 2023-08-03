@@ -1,12 +1,9 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.controller.dto.response.UserListResponse;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.entity.Admin;
 import com.example.cmd.domain.service.AdminService;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -92,6 +89,21 @@ public class AdminController {
     @GetMapping("/teacherNoti")
     public List<NotificationListResponse> findAdminNotification() {
         return adminService.findAdminNotification();
+    }
+
+    @PostMapping("/schedule")
+    public void writeSchedule(@RequestBody @Valid ScheduleWriteRequest scheduleWriteRequest) {
+        adminService.writeSchedule(scheduleWriteRequest);
+    }
+
+    @DeleteMapping("/schedule/{scheduleId}")
+    public void deleteSchedule(@PathVariable Long scheduleId) {
+        adminService.deleteSchedule(scheduleId);
+    }
+
+    @GetMapping("/schedule")
+    public List<ScheduleResponse> getSchedule(){
+        return adminService.getSchedule();
     }
 }
 

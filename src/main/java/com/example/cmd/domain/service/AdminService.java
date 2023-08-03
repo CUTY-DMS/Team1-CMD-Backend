@@ -1,12 +1,11 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.controller.dto.response.UserListResponse;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
+import com.example.cmd.domain.repository.ScheduleRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
 import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
@@ -15,7 +14,6 @@ import com.example.cmd.domain.service.exception.notification.NotificationNotFoun
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
 import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -41,6 +39,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final PasswordConverter passwordConverter;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
@@ -243,5 +242,36 @@ public class AdminService {
                 .map(NotificationListResponse::new)
                 .collect(Collectors.toList());
     }
+
+    public void writeSchedule(ScheduleWriteRequest scheduleWriteRequest) {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        Schedule schedule = scheduleRepository.save(
+                Schedule.builder()
+                        .title(scheduleWriteRequest.getTitle())
+                        .date(scheduleWriteRequest.getDate())
+                        .build()
+        );
+    }
+
+    public void deleteSchedule(Long scheduleId) {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> UserNotFoundException.EXCEPTION);
+
+        scheduleRepository.deleteById(scheduleId);
+    }
+
+    public List<ScheduleResponse> getSchedule(){
+
+        return scheduleRepository.findAll()
+                .stream()
+                .map(ScheduleResponse::new)
+                .collect(Collectors.toList());
+    }
+
 
 }
