@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AdminInfoChangeRequest {
 
-    private String password;
     private String name;
     private Long teachGrade;
     private Long teachClass;

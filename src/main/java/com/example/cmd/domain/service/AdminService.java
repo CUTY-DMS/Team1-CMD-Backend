@@ -172,10 +172,6 @@ public class AdminService {
     public void adminInfoChange(AdminInfoChangeRequest adminInfoChangeRequest) {
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        if (isPasswordMatching(adminInfoChangeRequest.getPassword(), currentAdmin.getPassword())) {
-            throw PasswordMismatch.EXCEPTION;
-        }
-
         Optional<Admin> adminList = adminRepository.findByEmail(currentAdmin.getEmail());
         if (adminList.isEmpty()) {
             throw AdminNotFoundException.EXCEPTION;
