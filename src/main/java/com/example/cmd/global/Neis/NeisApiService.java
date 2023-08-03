@@ -1,10 +1,18 @@
 package com.example.cmd.global.Neis;
 
+import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.facade.UserFacade;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@RequiredArgsConstructor
 @Service
 public class NeisApiService {
+
+    private final UserFacade userFacade;
+    private final UserRepository userRepository;
 
     // neis api URL
     private static final String API_URL = "https://open.neis.go.kr/hub/hisTimetable";
