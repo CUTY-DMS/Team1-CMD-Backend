@@ -10,6 +10,7 @@ import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
@@ -21,17 +22,17 @@ public class AdminController {
     private final AdminService adminService;
 
     @PostMapping("signup")
-    public void signup(@RequestBody AdminSignupRequest adminSignupRequest) {
+    public void signup(@RequestBody @Valid AdminSignupRequest adminSignupRequest) {
         adminService.adminSignup(adminSignupRequest);
     }
 
     @PostMapping("login")
-    public TokenResponse login(@RequestBody LoginRequest loginRequest){
+    public TokenResponse login(@RequestBody @Valid LoginRequest loginRequest){
         return adminService.adminLogin(loginRequest);
     }
 
     @PostMapping("write")
-    public void write(@RequestBody NotificationWriteRequest notificationWriteRequest) {
+    public void write(@RequestBody @Valid NotificationWriteRequest notificationWriteRequest) {
         adminService.write(notificationWriteRequest);
     }
 
@@ -66,7 +67,7 @@ public class AdminController {
     }
 
     @PatchMapping("password/change")
-    public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
+    public void passwordChange(@RequestBody @Valid PasswordChangeRequest passwordChangeRequest){
         adminService.passwordChange(passwordChangeRequest);
     }
 

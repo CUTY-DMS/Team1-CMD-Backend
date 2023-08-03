@@ -11,6 +11,7 @@ import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,12 +22,12 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("signup")
-    public void signup(@RequestBody UserSignupRequest signupRequest) {
+    public void signup(@RequestBody @Valid UserSignupRequest signupRequest) {
         userService.userSignUp(signupRequest);
     }
 
     @PostMapping("login")
-    public TokenResponse login(@RequestBody LoginRequest loginRequest) {
+    public TokenResponse login(@RequestBody @Valid LoginRequest loginRequest) {
         return userService.userLogin(loginRequest);
     }
 

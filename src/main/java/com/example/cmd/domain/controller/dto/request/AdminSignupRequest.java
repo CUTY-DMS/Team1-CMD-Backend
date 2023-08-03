@@ -10,25 +10,23 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class AdminSignupRequest {
 
-    @NotNull
+    @NotNull(message = "email을 입력하세요")
     private String email;
 
-    @NotNull
     private Long teachGrade;
 
-    @NotNull
     private Long teachClass;
 
-    @NotNull
+    @NotNull(message = "이름을 입력하세요")
     private String name;
 
     @Pattern(regexp = "^(?=.*[!@#$%^&*])(?=.{1,20}$).*",
             message = "비밀번호는 최대 20글자이고, 특수문자 1개 이상이 포함되어야 합니다.")
     private String password;
 
-    @NotNull
+    @NotNull(message = "생년월일을 입력하세요")
     private Long birth;
 
-    @NotNull
+    @NotNull(message = "가입 코드를 입력하세요")
     private String code;
 }

@@ -10,26 +10,24 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor()
 public class UserSignupRequest {
 
-    @NotNull
+    @NotNull(message = "이름을 입력하세요")
     private String name;
 
-    @NotNull
+    @NotNull(message = "email을 입력하세요")
     private String email;
 
     @Pattern(regexp = "^(?=.*[!@#$%^&*])(?=.{1,20}$).*",
             message = "비밀번호는 최대 20글자이고, 특수문자 1개 이상이 포함되어야 합니다.")
     private String password;
 
-    @NotNull
+    @NotNull(message = "학번을 입력하세요")
     private Long classId;
 
-    @NotNull
+    @NotNull(message = "생년월일을 입력하세요")
     private Long birth;
 
-    @NotNull
     private String majorField;
 
-    @NotNull
     private String clubName;
 
 }
