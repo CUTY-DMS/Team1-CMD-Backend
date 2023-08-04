@@ -247,10 +247,11 @@ public class AdminService {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        Schedule schedule = scheduleRepository.save(
+        scheduleRepository.save(
                 Schedule.builder()
                         .title(scheduleWriteRequest.getTitle())
                         .date(scheduleWriteRequest.getDate())
+                        .admin(currentAdmin)
                         .build()
         );
     }
