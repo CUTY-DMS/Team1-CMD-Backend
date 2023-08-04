@@ -82,8 +82,8 @@ public class AdminController {
     }
 
     @GetMapping("/classNoti")
-    public List<NotificationListResponse> findClassNotification() {
-        return adminService.getClassNotification();
+    public List<ClassNotificationListResponse> findClassNotification(@RequestBody @Valid ClassIdRequest classIdRequest) {
+        return adminService.getClassNotification(classIdRequest);
     }
 
     @GetMapping("/teacherNoti")

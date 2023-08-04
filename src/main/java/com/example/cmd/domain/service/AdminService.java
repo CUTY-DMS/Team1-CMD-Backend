@@ -25,8 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.cmd.domain.entity.Noti.CLASS;
-import static com.example.cmd.domain.entity.Noti.TEACHER;
+import static com.example.cmd.domain.entity.Noti.*;
 
 @Service
 @AllArgsConstructor
@@ -216,20 +215,20 @@ public class AdminService {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return notificationRepository.findAll()
+        return notificationRepository.findByNoti(ALL)
                 .stream()
                 .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
 
     }
 
-    public List<NotificationListResponse> getClassNotification() {
+    public List<ClassNotificationListResponse> getClassNotification(ClassIdRequest classIdRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return notificationRepository.findByNotiAndAdmin_TeachClassAndAdmin_TeachGrade(CLASS, currentAdmin.getTeachClass(), currentAdmin.getTeachGrade())
+        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, classIdRequest.getClasses(), classIdRequest.getGrade())
                 .stream()
-                .map(NotificationListResponse::new)
+                .map(ClassNotificationListResponse::new)
                 .collect(Collectors.toList());
     }
 
