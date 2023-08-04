@@ -1,11 +1,15 @@
 package com.example.cmd.global.Neis;
 
+import com.example.cmd.domain.controller.dto.response.UserIdResonse;
 import com.example.cmd.domain.entity.User;
 import com.example.cmd.domain.repository.UserRepository;
+import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -40,5 +44,16 @@ public class NeisApiService {
         // 클라이언트로 보내기 위해 데이터 반환
         return response;
     }
+
+    /*
+    //시간표를 불러올 때 학생의 반에 맞는 시간표를 가져올 수 있게 학번만 반환하는 api
+    public UserIdResonse getUserId() {
+        User currentUser = userFacade.getCurrentUser();
+        Optional<User> userList = userRepository.findByEmail(currentUser.getEmail());
+        if (userList.isEmpty()) {
+            throw UserNotFoundException.EXCEPTION;
+        }//현재 유저의 아이디만 가져오게함
+        return new UserIdResonse(currentUser.getClassId());
+    }*/
 }
 
