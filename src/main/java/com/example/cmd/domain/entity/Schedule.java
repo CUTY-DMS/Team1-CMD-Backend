@@ -15,15 +15,17 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Schedule {//제목, 내용, 날짜, 글쓴이
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
-    private String date;
+    private Long month;
+
+    private Long day;
 
     @ManyToOne
-    //@JsonIgnore
+    @JsonIgnore
     @JoinColumn(name = "admin_email")
     private Admin admin;
 }

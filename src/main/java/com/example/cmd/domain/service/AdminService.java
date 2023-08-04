@@ -243,6 +243,7 @@ public class AdminService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void writeSchedule(ScheduleWriteRequest scheduleWriteRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -250,12 +251,14 @@ public class AdminService {
         scheduleRepository.save(
                 Schedule.builder()
                         .title(scheduleWriteRequest.getTitle())
-                        .date(scheduleWriteRequest.getDate())
+                        .month(scheduleWriteRequest.getMonth())
+                        .day(scheduleWriteRequest.getDay())
                         .admin(currentAdmin)
                         .build()
         );
     }
 
+    @Transactional
     public void deleteSchedule(Long scheduleId) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
@@ -266,10 +269,13 @@ public class AdminService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public List<ScheduleResponse> getSchedule(){
+    public List<ScheduleResponse> getSchedule(Long month){
 
-        return scheduleRepository.findAll()
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return scheduleRepository.findByMonthContaining(month)
                 .stream()
+                .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
     }

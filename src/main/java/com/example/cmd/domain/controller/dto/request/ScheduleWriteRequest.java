@@ -12,6 +12,9 @@ public class ScheduleWriteRequest {
     @NotNull(message = "제목을 입력하세요")
     private String title;
 
-    @NotNull(message = "날짜를 입력하세요")
-    private String date;
+    @NotNull(message = "달를 입력하세요")
+    private Long month;
+
+    @NotNull(message = "일를 입력하세요")
+    private Long day;
 }

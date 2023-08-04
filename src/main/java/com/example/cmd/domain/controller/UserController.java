@@ -1,10 +1,8 @@
 package com.example.cmd.domain.controller;
 
-import com.example.cmd.domain.controller.dto.request.LoginRequest;
-import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
-import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
-import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
+import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
+import com.example.cmd.domain.controller.dto.response.ScheduleResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
 import com.example.cmd.domain.service.UserService;
 import com.example.cmd.domain.controller.dto.response.TokenResponse;
@@ -54,5 +52,10 @@ public class UserController {
     @PatchMapping("password/change")
     public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
         userService.passwordChange(passwordChangeRequest);
+    }
+
+    @GetMapping("/schedule")
+    public List<ScheduleResponse> getSchedule(@RequestParam Long month){
+        return userService.getSchedule(month);
     }
 }

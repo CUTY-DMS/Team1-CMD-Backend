@@ -14,11 +14,14 @@ public class ScheduleResponse {
 
     private String title;
 
-    private String date;
+    private Long month;
+
+    private Long day;
 
     public ScheduleResponse(Schedule schedule) {
         id = schedule.getId();
         title = schedule.getTitle();
-        date = schedule.getDate();
+        month = schedule.getMonth();
+        day = schedule.getDay();
     }
 }

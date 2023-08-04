@@ -16,6 +16,7 @@ public class NotificationListResponse {
 
     private String name;
 
+
     public NotificationListResponse(Notification notification) {
         id = notification.getId();
         title = notification.getTitle();

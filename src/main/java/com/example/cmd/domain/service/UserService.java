@@ -1,16 +1,12 @@
 package com.example.cmd.domain.service;
 
-import com.example.cmd.domain.controller.dto.request.LoginRequest;
-import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
-import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
-import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
+import com.example.cmd.domain.controller.dto.request.*;
 import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
+import com.example.cmd.domain.controller.dto.response.ScheduleResponse;
 import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.PasswordConverter;
-import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
+import com.example.cmd.domain.repository.ScheduleRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
@@ -23,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,6 +37,8 @@ public class UserService {
     private final PasswordConverter passwordConverter;
     private final UserFacade userFacade;
     private final NotificationRepository notificationRepository;
+    private final ScheduleRepository scheduleRepository;
+
 
     @Transactional
     public void userSignUp(UserSignupRequest signupRequest) {
@@ -153,6 +152,17 @@ public class UserService {
         }
         currentUser.passwordChange(passwordConverter.encode(passwordChangeRequest.getNewPassword()));
 
+    }
+
+    public List<ScheduleResponse> getSchedule(Long month){
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return scheduleRepository.findByMonthContaining(month)
+                .stream()
+                .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
+                .map(ScheduleResponse::new)
+                .collect(Collectors.toList());
     }
 }
 

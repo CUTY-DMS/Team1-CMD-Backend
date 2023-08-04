@@ -102,8 +102,8 @@ public class AdminController {
     }
 
     @GetMapping("/schedule")
-    public List<ScheduleResponse> getSchedule(){
-        return adminService.getSchedule();
+    public List<ScheduleResponse> getSchedule(@RequestParam(name = "month") Long month){
+        return adminService.getSchedule(month);
     }
 }
 
