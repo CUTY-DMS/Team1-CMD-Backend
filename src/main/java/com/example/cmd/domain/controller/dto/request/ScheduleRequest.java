@@ -11,8 +11,4 @@ public class ScheduleRequest {
 
     private int month;
 
-    private Long grade;
-
-    private Long classes;
-
 }

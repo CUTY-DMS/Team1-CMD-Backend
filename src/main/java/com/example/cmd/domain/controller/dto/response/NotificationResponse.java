@@ -20,6 +20,7 @@ public class NotificationResponse {
     private String name;
 
     private Noti noti;
+
     public NotificationResponse(Notification notification) {
         id = notification.getId();
         title = notification.getTitle();

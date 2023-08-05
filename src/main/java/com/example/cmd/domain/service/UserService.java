@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.cmd.domain.entity.Noti.ALL;
 import static com.example.cmd.domain.entity.Noti.CLASS;
 
 @Service
@@ -125,7 +126,7 @@ public class UserService {
 
         User currentUser = userFacade.getCurrentUser();
 
-        return notificationRepository.findAll()
+        return notificationRepository.findByNoti(ALL)
                 .stream()
                 .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
@@ -157,15 +158,14 @@ public class UserService {
     }
 
 
-    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
+    public List<ScheduleResponse> getSchedule(int year, int month){
 
         User currentUser = userFacade.getCurrentUser();
 
-        return scheduleRepository.findByMonthAndYearAndGradeAndClasses(scheduleRequest.getMonth(), scheduleRequest.getYear(), currentUser.getGrade(), currentUser.getClasses())
+        return scheduleRepository.findByMonthAndYearAndGradeAndClasses(month,year, currentUser.getGrade(), currentUser.getClasses())
                 .stream()
-                .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
+                .sorted(Comparator.comparing(Schedule::getDay)) // 오름차순 12
                 .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
     }
 }
-

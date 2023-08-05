@@ -56,8 +56,8 @@ public class UserController {
         userService.passwordChange(passwordChangeRequest);
     }
 
-    @GetMapping("/schedule")
-    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
-        return userService.getSchedule(scheduleRequest);
+    @GetMapping("/schedule/{year}/{month}")
+    public List<ScheduleResponse> getSchedule(@PathVariable int year, @PathVariable int month){
+        return userService.getSchedule(year,month);
     }
 }
