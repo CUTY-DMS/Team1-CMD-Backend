@@ -21,9 +21,4 @@ public class ScheduleWriteRequest {
     @NotNull(message = "일을 입력하세요")
     private int day;
 
-    @NotNull(message = "학년을 입력하세요")
-    private Long grade;
-
-    @NotNull(message = "반을 입력하세요")
-    private Long classes;
 }

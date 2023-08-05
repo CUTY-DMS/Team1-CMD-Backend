@@ -255,8 +255,6 @@ public class AdminService {
                         .year(scheduleWriteRequest.getYear())
                         .month(scheduleWriteRequest.getMonth())
                         .day(scheduleWriteRequest.getDay())
-                        .grade(scheduleWriteRequest.getGrade())
-                        .classes(scheduleWriteRequest.getClasses())
                         .admin(currentAdmin)
                         .build()
         );
@@ -274,11 +272,11 @@ public class AdminService {
     }
 
 
-    public List<ScheduleResponse> getSchedule(int year, int month, Long grade, Long classes){
+    public List<ScheduleResponse> getSchedule(int year, int month){
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return scheduleRepository.findByMonthAndYearAndGradeAndClasses(month, year, grade, classes)
+        return scheduleRepository.findByMonthAndYear(month, year)
                 .stream()
                 //.sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)

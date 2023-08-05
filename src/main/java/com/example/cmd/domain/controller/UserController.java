@@ -1,11 +1,8 @@
 package com.example.cmd.domain.controller;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.ScheduleResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.service.UserService;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +56,10 @@ public class UserController {
     @GetMapping("/schedule/{year}/{month}")
     public List<ScheduleResponse> getSchedule(@PathVariable int year, @PathVariable int month){
         return userService.getSchedule(year,month);
+    }
+
+    @GetMapping("/gradeClass")
+    public GradeAndClassResponse getGradeAndClasses(){
+        return userService.getGradeAndClasses();
     }
 }

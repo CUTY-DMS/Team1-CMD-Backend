@@ -1,9 +1,7 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.ScheduleResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.ScheduleRepository;
@@ -12,7 +10,6 @@ import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
 import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -162,10 +159,17 @@ public class UserService {
 
         User currentUser = userFacade.getCurrentUser();
 
-        return scheduleRepository.findByMonthAndYearAndGradeAndClasses(month,year, currentUser.getGrade(), currentUser.getClasses())
+        return scheduleRepository.findByMonthAndYear(month, year)
                 .stream()
                 .sorted(Comparator.comparing(Schedule::getDay)) // 오름차순 12
                 .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public GradeAndClassResponse getGradeAndClasses() {
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return new GradeAndClassResponse(currentUser);
     }
 }
