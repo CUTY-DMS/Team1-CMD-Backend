@@ -20,9 +20,15 @@ public class Schedule {//제목, 내용, 날짜, 글쓴이
 
     private String title;
 
-    private Long month;
+    private int year;
 
-    private Long day;
+    private int month;
+
+    private int day;
+
+    private Long classes;
+
+    private Long grade;
 
     @ManyToOne
     @JsonIgnore

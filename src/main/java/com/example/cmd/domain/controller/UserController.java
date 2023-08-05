@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -55,7 +57,7 @@ public class UserController {
     }
 
     @GetMapping("/schedule")
-    public List<ScheduleResponse> getSchedule(@RequestParam Long month){
-        return userService.getSchedule(month);
+    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
+        return userService.getSchedule(scheduleRequest);
     }
 }

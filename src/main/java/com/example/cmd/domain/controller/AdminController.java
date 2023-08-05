@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @CrossOrigin
@@ -102,8 +104,8 @@ public class AdminController {
     }
 
     @GetMapping("/schedule")
-    public List<ScheduleResponse> getSchedule(@RequestParam(name = "month") Long month){
-        return adminService.getSchedule(month);
+    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
+        return adminService.getSchedule(scheduleRequest);
     }
 }
 

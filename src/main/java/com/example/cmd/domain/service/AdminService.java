@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -250,8 +252,11 @@ public class AdminService {
         scheduleRepository.save(
                 Schedule.builder()
                         .title(scheduleWriteRequest.getTitle())
+                        .year(scheduleWriteRequest.getYear())
                         .month(scheduleWriteRequest.getMonth())
                         .day(scheduleWriteRequest.getDay())
+                        .grade(scheduleWriteRequest.getGrade())
+                        .classes(scheduleWriteRequest.getClasses())
                         .admin(currentAdmin)
                         .build()
         );
@@ -268,13 +273,14 @@ public class AdminService {
         scheduleRepository.deleteById(scheduleId);
     }
 
-    public List<ScheduleResponse> getSchedule(Long month){
+
+    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return scheduleRepository.findByMonthContaining(month)
-                .stream()
-                .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
+        return scheduleRepository.findByMonthAndYear(scheduleRequest.getMonth(), scheduleRequest.getYear())
+                .stream()//, scheduleRequest.getGrade(), scheduleRequest.getClasses()
+                //.sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
     }

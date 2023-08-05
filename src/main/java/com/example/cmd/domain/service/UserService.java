@@ -19,6 +19,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -154,11 +156,12 @@ public class UserService {
 
     }
 
-    public List<ScheduleResponse> getSchedule(Long month){
+
+    public List<ScheduleResponse> getSchedule(ScheduleRequest scheduleRequest){
 
         User currentUser = userFacade.getCurrentUser();
 
-        return scheduleRepository.findByMonthContaining(month)
+        return scheduleRepository.findByMonthAndYearAndGradeAndClasses(scheduleRequest.getMonth(), scheduleRequest.getYear(), currentUser.getGrade(), currentUser.getClasses())
                 .stream()
                 .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)
