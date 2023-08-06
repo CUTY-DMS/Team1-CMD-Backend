@@ -279,7 +279,7 @@ public class AdminService {
 
         return scheduleRepository.findAll()
                 .stream()
-                //.sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
+                .sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
     }
