@@ -273,11 +273,11 @@ public class AdminService {
     }
 
 
-    public List<ScheduleResponse> getSchedule(int year, int month){
+    public List<ScheduleResponse> getSchedule(){
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return scheduleRepository.findByMonthAndYear(month, year)
+        return scheduleRepository.findAll()
                 .stream()
                 //.sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
                 .map(ScheduleResponse::new)

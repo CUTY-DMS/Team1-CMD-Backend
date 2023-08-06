@@ -103,8 +103,8 @@ public class AdminController {
         adminService.deleteSchedule(scheduleId);
     }
 
-    @GetMapping("/schedule/{year}/{month}")
-    public List<ScheduleResponse> getSchedule(@PathVariable int year, @PathVariable int month){
-        return adminService.getSchedule(year, month);
+    @GetMapping("/schedule")
+    public List<ScheduleResponse> getSchedule(){
+        return adminService.getSchedule();
     }
 }
