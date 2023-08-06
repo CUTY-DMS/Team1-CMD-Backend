@@ -7,7 +7,7 @@ spring:
     password: ${PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl # ??
     properties:
@@ -24,7 +24,6 @@ jwt:
   header: ${HEADER:Authorization}
   prefix : ${PREFIX:Bearer }
   secret-key: ${JWT_SECRET_KEY:happilyeverafterhappilyesdfghgdfsdsadfgfdsfgasdfjaskdfhasjkdfhasjkdfaskverafter}
-  refresh-exp: ${JWT_REFRESH_EXP:123456789}
   access-exp: 360000
 
 logging:

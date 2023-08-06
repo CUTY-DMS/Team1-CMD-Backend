@@ -30,5 +30,4 @@ public class Notification {
     @JsonIgnore
     @JoinColumn(name = "admin_email")
     private Admin admin;
-
 }

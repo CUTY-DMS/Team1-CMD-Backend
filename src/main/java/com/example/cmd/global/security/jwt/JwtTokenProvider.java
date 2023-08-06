@@ -77,7 +77,7 @@ public class JwtTokenProvider {
                 .setSubject(email)
                 .claim("type", "refresh")
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + jwtProperties.getRefreshExp() * 1000))
+                .setExpiration(new Date(now.getTime() + jwtProperties.getRefreshExp() * 1000))//만료시간은
                 .signWith(SignatureAlgorithm.HS512, accessSecretKey)
                 .compact();
 

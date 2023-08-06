@@ -15,7 +15,7 @@ public class JwtProperties {
 
     private final String secretKey;
     private final Long accessExp;
-    private final Long refreshExp=3600L;
+    private final Long refreshExp=604800L;//리프레쉬 토큰의 만료시간은 1주일
     private final String header;
     private final String prefix;
 
