@@ -42,6 +42,7 @@ public class Admin implements UserDetails {
     private Long teachGrade;
 
     private Long teachClass;
+
     @Column(name = "admin_birth")
     private Long birth;
 

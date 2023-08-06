@@ -1,17 +1,14 @@
 package com.example.cmd.domain.controller;
 
-import com.example.cmd.domain.controller.dto.request.LoginRequest;
-import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
-import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
-import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
+import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.service.UserService;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -54,5 +51,15 @@ public class UserController {
     @PatchMapping("password/change")
     public void passwordChange(@RequestBody PasswordChangeRequest passwordChangeRequest){
         userService.passwordChange(passwordChangeRequest);
+    }
+
+    @GetMapping("/schedule/{year}/{month}")
+    public List<ScheduleResponse> getSchedule(@PathVariable int year, @PathVariable int month){
+        return userService.getSchedule(year,month);
+    }
+
+    @GetMapping("/gradeClass")
+    public GradeAndClassResponse getGradeAndClasses(){
+        return userService.getGradeAndClasses();
     }
 }

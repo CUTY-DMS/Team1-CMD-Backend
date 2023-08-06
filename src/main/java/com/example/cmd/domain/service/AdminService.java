@@ -1,12 +1,11 @@
 package com.example.cmd.domain.service;
 
 import com.example.cmd.domain.controller.dto.request.*;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.controller.dto.response.UserListResponse;
+import com.example.cmd.domain.controller.dto.response.*;
 import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
 import com.example.cmd.domain.repository.AdminRepository;
+import com.example.cmd.domain.repository.ScheduleRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.exception.admin.AdminNotFoundException;
 import com.example.cmd.domain.service.exception.admin.CodeMismatchException;
@@ -15,7 +14,6 @@ import com.example.cmd.domain.service.exception.notification.NotificationNotFoun
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
 import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.AdminFacade;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -23,12 +21,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.cmd.domain.entity.Noti.CLASS;
-import static com.example.cmd.domain.entity.Noti.TEACHER;
+import static com.example.cmd.domain.entity.Noti.*;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +40,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final UserRepository userRepository;
     private final PasswordConverter passwordConverter;
+    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public void write(NotificationWriteRequest notificationWriteRequest) {
@@ -217,20 +217,20 @@ public class AdminService {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return notificationRepository.findAll()
+        return notificationRepository.findByNoti(ALL)
                 .stream()
                 .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
 
     }
 
-    public List<NotificationListResponse> getClassNotification() {
+    public List<ClassNotificationListResponse> getClassNotification(ClassIdRequest classIdRequest) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return notificationRepository.findByNotiAndAdmin_TeachClassAndAdmin_TeachGrade(CLASS, currentAdmin.getTeachClass(), currentAdmin.getTeachGrade())
+        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, classIdRequest.getClasses(), classIdRequest.getGrade())
                 .stream()
-                .map(NotificationListResponse::new)
+                .map(ClassNotificationListResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -241,6 +241,45 @@ public class AdminService {
         return notificationRepository.findByNoti(TEACHER)
                 .stream()
                 .map(NotificationListResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void writeSchedule(ScheduleWriteRequest scheduleWriteRequest) {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        scheduleRepository.save(
+                Schedule.builder()
+                        .title(scheduleWriteRequest.getTitle())
+                        .year(scheduleWriteRequest.getYear())
+                        .month(scheduleWriteRequest.getMonth())
+                        .day(scheduleWriteRequest.getDay())
+                        .admin(currentAdmin)
+                        .build()
+        );
+    }
+
+    @Transactional
+    public void deleteSchedule(Long scheduleId) {
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(()-> UserNotFoundException.EXCEPTION);
+
+        scheduleRepository.deleteById(scheduleId);
+    }
+
+
+    public List<ScheduleResponse> getSchedule(int year, int month){
+
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        return scheduleRepository.findByMonthAndYear(month, year)
+                .stream()
+                //.sorted(Comparator.comparing(Schedule::getDay)) // 오른차순 12
+                .map(ScheduleResponse::new)
                 .collect(Collectors.toList());
     }
 

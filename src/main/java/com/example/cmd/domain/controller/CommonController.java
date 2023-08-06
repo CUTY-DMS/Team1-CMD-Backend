@@ -13,7 +13,7 @@ public class CommonController {
 
     private final CommonService commonService;
 
-    @GetMapping("noti/check/{notiId}")
+    @GetMapping("/noti/check/{notiId}")
     public NotificationResponse checkList(@PathVariable Long notiId) {
         return commonService.getNotification(notiId);
 

@@ -1,33 +1,30 @@
 package com.example.cmd.domain.service;
 
-import com.example.cmd.domain.controller.dto.request.LoginRequest;
-import com.example.cmd.domain.controller.dto.request.PasswordChangeRequest;
-import com.example.cmd.domain.controller.dto.request.UserInfoRequest;
-import com.example.cmd.domain.controller.dto.request.UserSignupRequest;
-import com.example.cmd.domain.controller.dto.response.NotificationListResponse;
-import com.example.cmd.domain.controller.dto.response.UserInfoResponse;
-import com.example.cmd.domain.entity.Admin;
-import com.example.cmd.domain.entity.PasswordConverter;
-import com.example.cmd.domain.entity.Role;
-import com.example.cmd.domain.entity.User;
+import com.example.cmd.domain.controller.dto.request.*;
+import com.example.cmd.domain.controller.dto.response.*;
+import com.example.cmd.domain.entity.*;
 import com.example.cmd.domain.repository.NotificationRepository;
+import com.example.cmd.domain.repository.ScheduleRepository;
 import com.example.cmd.domain.repository.UserRepository;
 import com.example.cmd.domain.service.exception.admin.PasswordMismatch;
 import com.example.cmd.domain.service.exception.user.EmailAlreadyExistException;
 import com.example.cmd.domain.service.exception.user.UserNotFoundException;
 import com.example.cmd.domain.service.facade.UserFacade;
-import com.example.cmd.domain.controller.dto.response.TokenResponse;
 import com.example.cmd.global.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.cmd.domain.entity.Noti.ALL;
 import static com.example.cmd.domain.entity.Noti.CLASS;
 
 @Service
@@ -40,6 +37,8 @@ public class UserService {
     private final PasswordConverter passwordConverter;
     private final UserFacade userFacade;
     private final NotificationRepository notificationRepository;
+    private final ScheduleRepository scheduleRepository;
+
 
     @Transactional
     public void userSignUp(UserSignupRequest signupRequest) {
@@ -124,7 +123,7 @@ public class UserService {
 
         User currentUser = userFacade.getCurrentUser();
 
-        return notificationRepository.findAll()
+        return notificationRepository.findByNoti(ALL)
                 .stream()
                 .map(notification -> new NotificationListResponse(notification))
                 .collect(Collectors.toList());
@@ -154,5 +153,23 @@ public class UserService {
         currentUser.passwordChange(passwordConverter.encode(passwordChangeRequest.getNewPassword()));
 
     }
-}
 
+
+    public List<ScheduleResponse> getSchedule(int year, int month){
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return scheduleRepository.findByMonthAndYear(month, year)
+                .stream()
+                .sorted(Comparator.comparing(Schedule::getDay)) // 오름차순 12
+                .map(ScheduleResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public GradeAndClassResponse getGradeAndClasses() {
+
+        User currentUser = userFacade.getCurrentUser();
+
+        return new GradeAndClassResponse(currentUser);
+    }
+}
