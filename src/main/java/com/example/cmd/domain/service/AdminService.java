@@ -73,16 +73,14 @@ public class AdminService {
     }
 
     @Transactional
-    public void delete(NotificationDeleteRequest notificationDeleteRequest) {
-        Admin currentAdmin = adminFacade.getCurrentAdmin();
-        Optional<Notification> optionalNotification = notificationRepository.findByAdminAndDateTime(currentAdmin, notificationDeleteRequest.getDateTime());
-        if (optionalNotification.isPresent()) {
-            Notification notification = optionalNotification.get();
-            notificationRepository.deleteById(notification.getId());
+    public void delete(Long notiId) {
 
-        } else {
-            throw NotificationNotFoundException.EXCEPTION;
-        }
+        Admin currentAdmin = adminFacade.getCurrentAdmin();
+
+        Notification notification = notificationRepository.findById(notiId)
+                .orElseThrow(() -> NotificationNotFoundException.EXCEPTION);
+
+        notificationRepository.deleteById(notiId);
     }
 
     @Transactional
@@ -224,11 +222,14 @@ public class AdminService {
 
     }
 
-    public List<ClassNotificationListResponse> getClassNotification(ClassIdRequest classIdRequest) {
+    public List<ClassNotificationListResponse> getClassNotification(Long notiId) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, classIdRequest.getClasses(), classIdRequest.getGrade())
+        Notification notification = notificationRepository.findById(notiId)
+                .orElseThrow(()->NotificationNotFoundException.EXCEPTION);
+
+        return notificationRepository.findById(notiId)
                 .stream()
                 .map(ClassNotificationListResponse::new)
                 .collect(Collectors.toList());

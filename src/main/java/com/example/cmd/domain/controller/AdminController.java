@@ -35,9 +35,9 @@ public class AdminController {
         adminService.write(notificationWriteRequest);
     }
 
-    @DeleteMapping("delete")
-    public void delete(@RequestBody NotificationDeleteRequest notificationDeleteRequest) {
-        adminService.delete(notificationDeleteRequest);
+    @DeleteMapping("delete{notiId}")
+    public void delete(@PathVariable Long notiId) {
+        adminService.delete(notiId);
     }
 
     @PatchMapping("fix")
@@ -83,9 +83,9 @@ public class AdminController {
         return adminService.getNotification();
     }
 
-    @GetMapping("/classNoti")
-    public List<ClassNotificationListResponse> findClassNotification(@RequestBody @Valid ClassIdRequest classIdRequest) {
-        return adminService.getClassNotification(classIdRequest);
+    @GetMapping("/classNoti{notiId}")
+    public List<ClassNotificationListResponse> findClassNotification(@PathVariable Long notiId) {
+        return adminService.getClassNotification(notiId);
     }
 
     @GetMapping("/teacherNoti")
