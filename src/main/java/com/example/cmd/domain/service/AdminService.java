@@ -92,6 +92,7 @@ public class AdminService {
                     .id(optionalNotification.get().getId())
                     .title(notificationFixRequest.getTitle())
                     .contents(notificationFixRequest.getContents())
+                    .noti(optionalNotification.get().getNoti())
                     .admin(optionalNotification.get().getAdmin())
                     .dateTime(optionalNotification.get().getDateTime())
                     .build();
@@ -222,14 +223,11 @@ public class AdminService {
 
     }
 
-    public List<ClassNotificationListResponse> getClassNotification(Long notiId) {
+    public List<ClassNotificationListResponse> getClassNotification(Long grade, Long classes) {
 
         Admin currentAdmin = adminFacade.getCurrentAdmin();
 
-        Notification notification = notificationRepository.findById(notiId)
-                .orElseThrow(()->NotificationNotFoundException.EXCEPTION);
-
-        return notificationRepository.findById(notiId)
+        return notificationRepository.findByNotiAndClassesAndGrade(CLASS, grade, classes)
                 .stream()
                 .map(ClassNotificationListResponse::new)
                 .collect(Collectors.toList());

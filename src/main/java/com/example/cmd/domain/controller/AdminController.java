@@ -83,9 +83,9 @@ public class AdminController {
         return adminService.getNotification();
     }
 
-    @GetMapping("/classNoti{notiId}")
-    public List<ClassNotificationListResponse> findClassNotification(@PathVariable Long notiId) {
-        return adminService.getClassNotification(notiId);
+    @GetMapping("/classNoti/{grade}/{classes}")
+    public List<ClassNotificationListResponse> findClassNotification(@PathVariable Long grade, @PathVariable Long classes) {
+        return adminService.getClassNotification(grade, classes);
     }
 
     @GetMapping("/teacherNoti")
